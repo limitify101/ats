@@ -1,0 +1,41 @@
+{
+  "title": "ATS",
+  "name": "attendance-tracking-system",
+  "version": "7.0.6",
+  "scripts": {
+    "build": "webpack"
+  },
+  "description": "",
+  "keywords": [
+    "css",
+    "sass",
+    "html",
+    "responsive",
+    "theme",
+    "template"
+  ],
+  "dependencies": {
+    "bootstrap": "5.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.14",
+    "browser-sync": "2.29.1",
+    "chokidar": "3.5.3",
+    "concurrently": "6.3.0",
+    "css-loader": "^7.1.2",
+    "file-loader": "^6.2.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "image-webpack-loader": "^8.1.0",
+    "postcss": "8.4.21",
+    "prettier": "2.8.6",
+    "sass": "^1.60.0",
+    "sass-loader": "^16.0.3",
+    "shelljs": "0.8.5",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "upath": "2.0.1",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4"
+  }
+}

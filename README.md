@@ -1,7 +1,7 @@
 # ATS
 
 <div align="center">
-	<img src="./ATS%20Banner.jpg">
+	<img width="100%" src="./ATS%20Banner.jpg">
 </div>
 
 ---

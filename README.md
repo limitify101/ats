@@ -1,6 +1,6 @@
 # ATS
 
-![Project Banner](./ATS%20Banner.jpg#center)
+![img](./ATS%20Banner.jpg#center)
 
 ---
 

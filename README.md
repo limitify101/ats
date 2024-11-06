@@ -1,6 +1,8 @@
 # ATS
 
-![img](./ATS%20Banner.jpg#center)
+<div align="center">
+	<img src="./ATS%20Banner.jpg">
+</div>
 
 ---
 

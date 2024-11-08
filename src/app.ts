@@ -18,8 +18,8 @@ const app = express();
 app.use(express.static(path.join(__dirname, "../app", "dist")));
 app.use(express.json());
 const models = Models(sequelize);
-app.use("/api/student", studentRoutes(sequelize, models)); // Pass sequelize
-app.use("/api/rfid", rfidRoutes(sequelize, models));
+app.use("/api/v1/student", studentRoutes(sequelize, models)); // Pass sequelize
+app.use("/api/v1/rfid", rfidRoutes(sequelize, models));
 // Static file routes
 app.get("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../app", "dist", "index.html"));

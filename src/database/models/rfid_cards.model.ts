@@ -29,7 +29,6 @@ const initializeRFIDCardsModel = (sequelize: Sequelize) => {
       studentID: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: null,
         references: {
           model: "Students",
           key: "studentID",

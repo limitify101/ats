@@ -77,7 +77,26 @@ const initializeStudentsModel = (sequelize: Sequelize) => {
       timestamps: true,
     }
   );
-
+  Students.afterUpdate(async (student, options: any) => {
+    const { RFID_Cards } = options.models; // Make sure to pass the models to the options in your hook
+    if (student.status === "graduated") {
+      try {
+        // Find the associated RFID card
+        await RFID_Cards.update(
+          { activated: false, studentID: null }, // Deactivate the card and unassign the student
+          { where: { studentID: student.studentID } }
+        );
+        console.log(
+          `RFID card deactivated for graduated student: ${student.studentID}`
+        );
+      } catch (err) {
+        console.error(
+          `Error deactivating RFID card for student ${student.studentID}:`,
+          err
+        );
+      }
+    }
+  });
   return Students;
 };
 

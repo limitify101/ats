@@ -10,7 +10,7 @@ const handleRFID = (sequelize: any, rfidCardService: RFID_CardService) => {
       if (!req.body.rfid_ID) {
         return res
           .status(400)
-          .json({ success: false, msg: "Please fill required fields" });
+          .json({ success: false, error: "Please fill required fields" });
       }
       const rfidData: RFID_CARD = req.body;
       const existingCard = await checkRFIDCardExistence(
@@ -20,7 +20,9 @@ const handleRFID = (sequelize: any, rfidCardService: RFID_CardService) => {
       if (existingCard) {
         // Rollback the transaction if RFID exists
         await transaction.rollback();
-        return res.status(409).json({ error: "RFID ID already in use." });
+        return res
+          .status(409)
+          .json({ success: false, error: "RFID UID already in use." });
       }
       const card = await rfidCardService.createCard(
         { ...rfidData },

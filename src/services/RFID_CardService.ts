@@ -22,6 +22,25 @@ class RFID_CardService {
       return err;
     }
   }
+  async uploadCards(data: RFID_CARD[], p0: { transaction: any }) {
+    try {
+      await this.models.RFID_Cards.bulkCreate(data, {
+        transaction: p0.transaction,
+        validate: true,
+      });
+    } catch (err: any) {
+      // Handle specific Sequelize errors
+      if (err instanceof Sequelize.UniqueConstraintError) {
+        throw new Error(
+          "Unique constraint violation: " +
+            err.errors.map((e: any) => e.message).join(", ")
+        );
+      } else {
+        // Rethrow any other errors
+        throw err;
+      }
+    }
+  }
   async findCardById(rfid_ID: string) {
     try {
       const result = await this.models.RFID_Cards.findAll({

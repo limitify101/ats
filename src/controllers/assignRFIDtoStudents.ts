@@ -4,7 +4,7 @@ import { getUnassignedStudents } from "../helpers/studentsHelper";
 const assignRFIDsToStudents = async (sequelize: any, models: any) => {
   const transaction: any = await sequelize.transaction();
   try {
-    const unassignedStudents = await getUnassignedStudents(sequelize);
+    const unassignedStudents = await getUnassignedStudents(models);
     const unassignedRFIDs = await getUnassignedRFIDs(models);
 
     if (unassignedRFIDs.length === 0) {
@@ -40,14 +40,6 @@ const assignRFIDsToStudents = async (sequelize: any, models: any) => {
           await models.RFID_Cards.update(
             { studentID: student.studentID, activated: true },
             { where: { id: rfid.id } }
-          );
-          await models.Students.update(
-            { status: "graduated" }, // or any other field that may be updated
-            {
-              where: { studentID: models.Students.studentID },
-              individualHooks: true, // Ensure that the hook runs for each row if updating multiple
-              models: models.RFID_Cards, // Pass models to options for access in the hook
-            }
           );
         }
       } catch (error) {

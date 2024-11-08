@@ -1,17 +1,24 @@
-export const getUnassignedStudents = async (sequelize: any) => {
+import { Op } from "sequelize";
+
+export const getUnassignedStudents = async (models: any) => {
   try {
-    const unassignedStudents = await sequelize.query(
-      `
-        SELECT "Students"."studentID", "Students"."firstName", "Students"."lastName"
-        FROM "Students"
-        LEFT JOIN "RFID_Cards" ON "Students"."studentID" = "RFID_Cards"."studentID"
-        WHERE "RFID_Cards"."studentID" IS NULL;
-        `,
-      { type: sequelize.QueryTypes.SELECT }
-    );
+    const unassignedStudents = await models.Students.findAll({
+      where: {
+        status: { [Op.ne]: "graduated" }, // Only non-graduated students
+      },
+      include: [
+        {
+          model: models.RFID_Cards,
+          required: false, // Left join to include students without RFID cards
+          as: "rfidCard",
+          where: { studentID: null }, // Only those with unassigned RFID cards
+        },
+      ],
+      attributes: ["studentID", "firstName", "lastName"],
+    });
     return unassignedStudents;
-  } catch (err: any) {
-    console.error("Error fetching unassigned students", err);
-    throw err;
+  } catch (error) {
+    console.error("Error fetching unassigned students:", error);
+    throw error;
   }
 };

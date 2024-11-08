@@ -15,17 +15,15 @@ class StudentService {
   */
   async createStudent(std: Student, p0: { transaction: any }) {
     try {
-      const student = await this.models.Students.create(std);
+      const student = await this.models.Students.create(std, {
+        transaction: p0.transaction,
+        validate: true,
+      });
       return student;
     } catch (err: any) {
       return err;
     }
   }
-  //Get user form the database
-  async getAllStudentsbyClass() {
-    return "Getting all students from database";
-  }
-
   async uploadStudents(data: Student[], p0: { transaction: any }) {
     try {
       // Attempt to bulk create students
@@ -46,14 +44,14 @@ class StudentService {
       }
     }
   }
+  //Get users form the database by Class
+  async getAllStudentsbyClass() {
+    return "Getting all students from database";
+  }
+
   //Verify whether the RFID ID is registered on user.
   async checkStudentWithRFID_ID(rfid_ID: number) {
     return "Checking student in the database";
-  }
-
-  //Change status to present.
-  async setAttendance() {
-    return "Student attendance is being set...";
   }
 }
 

@@ -1,9 +1,10 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Attendance extends Model {
-  public id!: number;
-  public attendance_status!: "present" | "absent" | "late";
-  public attendanceTime!: string;
+  declare id: number;
+  declare attendance_status: "present" | "absent" | "late";
+  declare arrivalTime: Date;
+  declare studentID: string;
 }
 
 const initializeAttendanceModel = (sequelize: Sequelize) => {
@@ -20,9 +21,19 @@ const initializeAttendanceModel = (sequelize: Sequelize) => {
         defaultValue: "absent",
         allowNull: false,
       },
-      attendanceTime: {
-        type: DataTypes.TIME,
+      arrivalTime: {
+        type: DataTypes.DATE,
         allowNull: false,
+      },
+      studentID: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+          model: "Students",
+          key: "studentID",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
     },
     {

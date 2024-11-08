@@ -9,18 +9,23 @@ const Models = (sequelize: any) => {
 
   Students.hasOne(RFID_Cards, {
     foreignKey: "studentID",
+    sourceKey: "studentID",
     as: "rfidCard",
   });
   RFID_Cards.belongsTo(Students, {
     foreignKey: "studentID",
     as: "student",
   });
-  Students.hasMany(Attendance);
+  Students.hasMany(Attendance, {
+    foreignKey: "studentID",
+    as: "attendance",
+  });
   // Sync models with the database
   sequelize
     .sync()
     .then(() => console.log("Database in sync mode..."))
     .catch((error: any) => console.error("Error syncing database:", error));
+  // Log to confirm associations are set
 
   return { Students, RFID_Cards, Attendance };
 };

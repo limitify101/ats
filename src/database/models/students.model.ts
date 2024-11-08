@@ -12,7 +12,7 @@ class Students extends Model {
   declare contact: string;
   declare address?: string; // Optional
   declare emergencyContact?: string; // Optional
-  declare status: string;
+  declare status: "active" | "graduated";
   declare notes?: string; // Optional
 }
 
@@ -79,9 +79,10 @@ const initializeStudentsModel = (sequelize: Sequelize) => {
   );
   Students.afterUpdate(async (student, options: any) => {
     const { RFID_Cards } = options.models; // Make sure to pass the models to the options in your hook
+
     if (student.status === "graduated") {
       try {
-        // Find the associated RFID card
+        // Update the associated RFID card
         await RFID_Cards.update(
           { activated: false, studentID: null }, // Deactivate the card and unassign the student
           { where: { studentID: student.studentID } }

@@ -24,7 +24,7 @@ const studentRoutes = (sequelize: any, models: any) => {
   //Get students with no RFIDs.
   router.get("/unassigned-students", async (req: any, res: any) => {
     try {
-      const unassignedStudents = await getUnassignedStudents(sequelize);
+      const unassignedStudents = await getUnassignedStudents(models);
       res.json({
         success: true,
         data: unassignedStudents,

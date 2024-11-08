@@ -78,7 +78,7 @@ const handleUpload = (sequelize: any, studentService: StudentService) => {
       // Rollback the transaction in case of error
       await transaction.rollback();
 
-      return res.status(409).json({
+      return res.status(500).json({
         success: false,
         msg: "Error inserting data into database",
         error: err.message || err, // Return the specific error message

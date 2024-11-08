@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import studentRoutes from "./routes/student.routes";
 import rfidRoutes from "./routes/rfid.routes";
 import Models from "./database/models/index.model";
+import attendanceRoutes from "./routes/attendance.routes";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -17,9 +18,13 @@ const app = express();
 // Static files setup
 app.use(express.static(path.join(__dirname, "../app", "dist")));
 app.use(express.json());
+
+//Routes
 const models = Models(sequelize);
-app.use("/api/v1/student", studentRoutes(sequelize, models)); // Pass sequelize
+app.use("/api/v1/student", studentRoutes(sequelize, models));
 app.use("/api/v1/rfid", rfidRoutes(sequelize, models));
+app.use("/api/v1/attendance", attendanceRoutes(sequelize, models));
+
 // Static file routes
 app.get("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../app", "dist", "index.html"));

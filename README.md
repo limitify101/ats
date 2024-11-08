@@ -112,27 +112,27 @@ Ensure you have the following installed:
 
 ### Students
 
-#### POST /students - Create a new student
+#### POST /api/v1/students - Create a new student (/create OR /upload)
 
-#### GET /students/:id - Get a student by ID
+#### GET /api/v1//students/:id - Get a student by ID
 
-#### PUT /students/:id - Update student information
+#### PUT /api/v1/students/:id - Update student information
 
-#### DELETE /students/:id - Remove a student
+#### DELETE /api/v1/students/:id - Remove a student
 
 ### RFID Cards
 
-#### POST /rfid-cards - Register a new RFID card
+#### POST /api/v1/rfid - Register a new RFID card (/set OR /upload)
 
-#### GET /rfid-cards/:id - Get RFID card information
+#### GET /api/v1/rfid/:id - Get RFID card information
 
-#### DELETE /rfid-cards/:id - Deactivate an RFID card
+#### DELETE /api/v1//rfid/:id - Deactivate an RFID card
 
 ### Attendance
 
-#### POST /attendance/log - Log attendance when a card is scanned
+#### POST /api/v1/attendance/log - Log attendance when a card is scanned
 
-#### GET /attendance/:studentID - Retrieve a student's attendance record
+#### GET /api/v1/attendance/:studentID - Retrieve a student's attendance record
 
 ## Contributing
 

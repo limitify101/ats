@@ -22,7 +22,6 @@ export default {
       },
       studentID: {
         type: DataTypes.STRING,
-        allowNull: false,
         references: {
           model: "Students", // Referencing the Students model
           key: "studentID",

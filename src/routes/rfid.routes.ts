@@ -8,7 +8,8 @@ const rfidRoutes = (sequelize: any, models: any) => {
   const rfidCardService = new RFID_CardService(sequelize, models);
 
   // Generating rfid cards.
-  router.post("/set_rfid", handleRFID(sequelize, models));
+  router.post("/set_rfid", handleRFID(sequelize, rfidCardService));
+  router.post("/upload_rfid");
   return router;
 };
 

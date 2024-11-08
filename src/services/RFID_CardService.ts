@@ -11,13 +11,14 @@ class RFID_CardService {
 
   async createCard(
     rfid: RFID_CARD,
-    studentID: string,
+    studentID: string | null | undefined,
     p0: { transaction: any }
   ) {
     try {
       const card = await this.models.RFID_Cards.create({ ...rfid, studentID });
       return card;
     } catch (err: any) {
+      console.log(err);
       return err;
     }
   }

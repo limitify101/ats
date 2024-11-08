@@ -4,7 +4,7 @@ class RFID_Cards extends Model {
   declare id: string;
   declare rfid_ID: string;
   declare activated: boolean;
-  declare studentID: string; // Foreign key
+  declare studentID?: string | null; // Foreign key
 }
 
 const initializeRFIDCardsModel = (sequelize: Sequelize) => {
@@ -28,12 +28,14 @@ const initializeRFIDCardsModel = (sequelize: Sequelize) => {
       },
       studentID: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: null,
         references: {
-          model: "Students", // Referencing the Students model
+          model: "Students",
           key: "studentID",
         },
-        onDelete: "CASCADE",
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
       },
     },
     {

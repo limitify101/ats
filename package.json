@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon",
-    "db_dev:migrate": "npx sequelize-cli db:migrate --config=config/config.mjs --env=development",
-    "db_dev:down": "npx sequelize-cli db:migrate:undo --config=config/config.mjs --env=development"
+    "db_dev:migrate": "npx sequelize-cli db:migrate --config=config/config.js --env=development",
+    "db_dev:down": "npx sequelize-cli db:migrate:undo --config=config/config.js --env=development"
   },
   "keywords": [],
   "author": "",

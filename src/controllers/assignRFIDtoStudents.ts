@@ -12,6 +12,11 @@ const assignRFIDsToStudents = async (sequelize: any, models: any) => {
       console.warn("No available RFIDs to assign.");
       return;
     }
+    if (unassignedStudents.length === 0) {
+      await transaction.rollback();
+      console.info("All students are assigned with an RFID Card.");
+      return;
+    }
     //Shuffle RFIDs to ensure randomization.
     for (let i = unassignedRFIDs.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

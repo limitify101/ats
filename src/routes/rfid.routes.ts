@@ -22,7 +22,7 @@ const rfidRoutes = (sequelize: any, models: any) => {
       await assignRFIDsToStudents(sequelize, models);
       return res.status(201).json({
         success: true,
-        msg: "RFIDs assigned to unassigned students successfully.",
+        msg: "All RFIDs are assigned to students",
       });
     } catch (err: any) {
       console.error("Error assigning RFIDs:", err);

@@ -1,13 +1,25 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
-
-class Attendance extends Model {
-  declare id: number;
-  declare attendance_status: "present" | "absent" | "late";
-  declare arrivalTime: Date;
-  declare studentID: string;
+"use strict";
+import { Model } from "sequelize";
+interface AttendanceAttributes {
+  id: number;
+  attendance_status: "present" | "absent" | "late";
+  arrivalTime: Date;
+  studentID: string;
 }
+module.exports = (sequelize: any, DataTypes: any) => {
+  class Attendance
+    extends Model<AttendanceAttributes>
+    implements AttendanceAttributes
+  {
+    id!: number;
+    attendance_status!: "present" | "absent" | "late";
+    arrivalTime!: Date;
+    studentID!: string;
 
-const initializeAttendanceModel = (sequelize: Sequelize) => {
+    static associate(models: any) {
+      // define association here
+    }
+  }
   Attendance.init(
     {
       id: {
@@ -38,12 +50,8 @@ const initializeAttendanceModel = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: "Attendance",
-      timestamps: true,
+      modelName: "Attendance",
     }
   );
-
   return Attendance;
 };
-
-export default initializeAttendanceModel;

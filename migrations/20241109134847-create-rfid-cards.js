@@ -1,9 +1,8 @@
-import { DataTypes, QueryInterface } from "sequelize";
-
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
-export default {
-  async up(queryInterface: QueryInterface) {
-    await queryInterface.createTable("RFID_Cards.models", {
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("RFID_Cards", {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -22,15 +21,17 @@ export default {
       },
       studentID: {
         type: DataTypes.STRING,
+        allowNull: true,
         references: {
-          model: "Students", // Referencing the Students model
+          model: "Students",
           key: "studentID",
         },
-        onDelete: "CASCADE",
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
       },
     });
   },
-  async down(queryInterface: QueryInterface) {
-    await queryInterface.dropTable("RFID_Cards.models");
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("RFID_Cards");
   },
 };

@@ -1,29 +1,22 @@
 import express, { Request, Response } from "express";
 import path from "path";
-import "./register";
-import sequelize from "./database/connection"; // Sequelize instance import
-// import config from "./database/sequelize.config";
-import dotenv from "dotenv";
-dotenv.config();
+import db from "../models/index";
 
-import { fileURLToPath } from "url";
-import studentRoutes from "./routes/student.routes";
-import rfidRoutes from "./routes/rfid.routes";
-import Models from "./database/models/index.model";
-import attendanceRoutes from "./routes/attendance.routes";
+import studentRoutes from "../src/routes/student.routes";
+import rfidRoutes from "../src/routes/rfid.routes";
+import attendanceRoutes from "../src/routes/attendance.routes";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Static files setup
 app.use(express.static(path.join(__dirname, "../app", "dist")));
 app.use(express.json());
 
 //Routes
-const models = Models(sequelize);
-app.use("/api/v1/student", studentRoutes(sequelize, models));
-app.use("/api/v1/rfid", rfidRoutes(sequelize, models));
-app.use("/api/v1/attendance", attendanceRoutes(sequelize, models));
+app.use("/api/v1/student", studentRoutes(db.sequelize, db));
+app.use("/api/v1/rfid", rfidRoutes(db.sequelize, db));
+app.use("/api/v1/attendance", attendanceRoutes(db.sequelize, db));
 
 // Static file routes
 app.get("/", (req: Request, res: Response) => {

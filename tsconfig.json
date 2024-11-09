@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,  // Optional: Enables type-checking for JavaScript files
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "outDir": "./dist",
-    "strict": true
+    "target": "ESNext",                         
+    "module": "ESNext",                                                 
+    "moduleResolution": "Node",           
+    "allowJs": true,                                                   
+    "outDir": "./dist",              
+    "esModuleInterop": true,   
+    "forceConsistentCasingInFileNames": true,            
+    "strict": true,                                 
+    "skipLibCheck": true                            
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/database/migrations/20241105123234-create-students-model.mts", "src/database/migrations/20241105123641-create-rfid-cards-model.mts", "src/database/migrations/20241105123931-create-attendance-model.mts", "src/database/migrations/add_StudentID_to_rfid.mts"],  // Include .ts and .js files
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules"]
 }

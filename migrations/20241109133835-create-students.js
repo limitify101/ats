@@ -1,9 +1,8 @@
-import { DataTypes, QueryInterface } from "sequelize";
-
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
-export default {
-  async up(queryInterface: QueryInterface) {
-    await queryInterface.createTable("Students.models", {
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("Students", {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -57,7 +56,7 @@ export default {
       },
     });
   },
-  async down(queryInterface: QueryInterface) {
-    await queryInterface.dropTable("Students.models");
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("Students");
   },
 };

@@ -6,7 +6,7 @@ import { getStudentWithRFID } from "../helpers/rfidHelper";
 import { Op } from "sequelize";
 // Define the late time range constants
 const LATE_START_TIME = "08:01"; // start of late period (e.g., 8 AM)
-const LATE_END_TIME = "14:00"; // end of late period (e.g., 2 PM)
+const LATE_END_TIME = "17:00"; // end of late period (e.g., 2 PM)
 
 const handleAttendance = (
   sequelize: any,

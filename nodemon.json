@@ -1,5 +1,5 @@
 {
-  "exec": "tsx ./src/index.ts",
+  "exec": "tsx ./index.ts",
   "ext": ".ts,.js",
   "watch": ["src"]
 }

@@ -1,8 +1,8 @@
-"use strict";
-import { Model } from "sequelize";
+import { Model, DataTypes } from "sequelize";
+
 interface StudentsAttributes {
-  id: string; // UUID
-  studentID: string; // Primary key
+  id: string;
+  studentID: string;
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -10,18 +10,19 @@ interface StudentsAttributes {
   grade: string;
   enrollmentDate: Date;
   contact: string;
-  address?: string; // Optional
-  emergencyContact?: string; // Optional
+  address?: string;
+  emergencyContact?: string;
   status: "active" | "graduated";
   notes?: string;
 }
-module.exports = (sequelize: any, DataTypes: any) => {
+
+const initializeStudents = (sequelize: any) => {
   class Students
     extends Model<StudentsAttributes>
     implements StudentsAttributes
   {
-    id!: string; // UUID
-    studentID!: string; // Primary key
+    id!: string;
+    studentID!: string;
     firstName!: string;
     lastName!: string;
     dateOfBirth!: Date;
@@ -29,24 +30,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
     grade!: string;
     enrollmentDate!: Date;
     contact!: string;
-    address?: string; // Optional
-    emergencyContact?: string; // Optional
+    address?: string;
+    emergencyContact?: string;
     status!: "active" | "graduated";
     notes?: string;
-
-    static associate(models: any) {
-      // define association here
-      Students.hasOne(models.RFID_Cards, {
-        foreignKey: "studentID",
-        sourceKey: "studentID",
-        as: "rfidCard",
-      });
-      Students.hasMany(models.Attendance, {
-        foreignKey: "studentID",
-        as: "attendance",
-      });
-    }
   }
+
   Students.init(
     {
       id: {
@@ -94,8 +83,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
       },
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM("active", "graduated", "expelled"),
         allowNull: false,
+        defaultValue: "active",
       },
       notes: {
         type: DataTypes.TEXT,
@@ -104,7 +94,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     {
       sequelize,
       modelName: "Students",
+      timestamps: true,
     }
   );
+
   return Students;
 };
+
+export default initializeStudents;

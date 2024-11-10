@@ -8,7 +8,7 @@ import assignRFIDsToStudents from "../controllers/assignRFIDtoStudents";
 const rfidRoutes = (sequelize: any, models: any) => {
   const router = express.Router();
 
-  const rfidCardService = new RFID_CardService(sequelize, models);
+  const rfidCardService = new RFID_CardService(models);
 
   // Generating rfid cards.
   router.post("/set", handleRFID(sequelize, rfidCardService));

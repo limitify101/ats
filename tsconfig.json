@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",                         
+    "target": "es2017",                         
     "module": "ESNext",                                                 
-    "moduleResolution": "Node",           
+    "moduleResolution": "Node10",           
     "allowJs": true,                                                   
     "outDir": "./dist",              
     "esModuleInterop": true,   

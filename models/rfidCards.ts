@@ -1,12 +1,13 @@
-"use strict";
-import { Model } from "sequelize";
+import { Model, DataTypes } from "sequelize";
+
 interface RFID_CardsAttributes {
   rfid_ID: string;
   id: string;
   activated: boolean;
   studentID?: string | null;
 }
-module.exports = (sequelize: any, DataTypes: any) => {
+
+const initializeRFIDCards = (sequelize: any) => {
   class RFID_Cards
     extends Model<RFID_CardsAttributes>
     implements RFID_CardsAttributes
@@ -15,15 +16,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     rfid_ID!: string;
     activated!: boolean;
     studentID?: string | null;
-
-    static associate(models: any) {
-      // define association here
-      RFID_Cards.belongsTo(models.Students, {
-        foreignKey: "studentID",
-        as: "student",
-      });
-    }
   }
+
   RFID_Cards.init(
     {
       id: {
@@ -46,7 +40,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: true,
         references: {
-          model: "Students",
+          model: "Students", // Ensure this matches the actual model name
           key: "studentID",
         },
         onDelete: "SET NULL",
@@ -56,7 +50,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     {
       sequelize,
       modelName: "RFID_Cards",
+      timestamps: true,
     }
   );
+
   return RFID_Cards;
 };
+
+export default initializeRFIDCards;

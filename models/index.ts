@@ -1,53 +1,46 @@
-"use strict";
-import fs from "fs";
 import path from "path";
 import process from "process";
 import { Sequelize, DataTypes } from "sequelize";
-const basename = path.basename(import.meta.url);
+import initializeStudents from "./students";
+import initializeRFIDCards from "./rfidCards";
+import initializeAttendance from "./attendance";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 const env = process.env.NODE_ENV || "development";
-const config = await import(path.join(__dirname, "/../config/config.js")).then(
-  (module) => module[env]
-);
+
+const config = (await import(path.join(__dirname, "../config/config.js")))
+  .default[env];
+
 const db: any = {};
 
 let sequelize: Sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(
-    process.env[config.use_env_variable] as string,
-    config
-  );
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
+sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
+const Students = initializeStudents(sequelize);
+const RFID_Cards = initializeRFIDCards(sequelize);
+const Attendance = initializeAttendance(sequelize);
 
-fs.readdirSync(__dirname)
-  .filter((file: string) => {
-    return (
-      file.indexOf(".") !== 0 &&
-      file !== basename &&
-      file.slice(-3) === ".ts" &&
-      file.indexOf(".test.ts") === -1
-    );
-  })
-  .forEach(async (file: any) => {
-    const model = await import(path.join(__dirname, file));
-    db[model.default.name] = model.default(sequelize, DataTypes);
-  });
-
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+Students.hasOne(RFID_Cards, {
+  foreignKey: "studentID",
+  sourceKey: "studentID",
+  as: "rfidCard",
+});
+Students.hasMany(Attendance, {
+  foreignKey: "studentID",
+  as: "attendance",
+});
+RFID_Cards.belongsTo(Students, {
+  foreignKey: "studentID",
+  as: "student",
 });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.Students = Students;
+db.RFID_Cards = RFID_Cards;
+db.Attendance = Attendance;
 
 export default db;

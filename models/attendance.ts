@@ -1,12 +1,13 @@
-"use strict";
-import { Model } from "sequelize";
+import { Model, DataTypes } from "sequelize";
+
 interface AttendanceAttributes {
   id: number;
   attendance_status: "present" | "absent" | "late";
   arrivalTime: Date;
   studentID: string;
 }
-module.exports = (sequelize: any, DataTypes: any) => {
+
+const initializeAttendance = (sequelize: any) => {
   class Attendance
     extends Model<AttendanceAttributes>
     implements AttendanceAttributes
@@ -15,11 +16,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     attendance_status!: "present" | "absent" | "late";
     arrivalTime!: Date;
     studentID!: string;
-
-    static associate(models: any) {
-      // define association here
-    }
   }
+
   Attendance.init(
     {
       id: {
@@ -51,7 +49,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
     {
       sequelize,
       modelName: "Attendance",
+      tableName: "Attendance",
+      timestamps: true,
     }
   );
+
   return Attendance;
 };
+
+export default initializeAttendance;

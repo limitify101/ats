@@ -5,7 +5,7 @@ const { Op } = Sequelize;
 class RFID_CardService {
   models: any;
 
-  constructor(sequelize: any, models: any) {
+  constructor(models: any) {
     this.models = models;
   }
 

@@ -4,55 +4,66 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Students", {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       studentID: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true,
       },
       firstName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       dateOfBirth: {
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       gender: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       grade: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       enrollmentDate: {
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       contact: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       address: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       emergencyContact: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       status: {
-        type: DataTypes.STRING,
+        type: Sequelize.ENUM("active", "graduated", "expelled"),
         allowNull: false,
+        defaultValue: "active",
       },
       notes: {
-        type: DataTypes.TEXT,
+        type: Sequelize.TEXT,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("now"),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("now"),
       },
     });
   },

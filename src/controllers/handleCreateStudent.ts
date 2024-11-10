@@ -2,13 +2,11 @@ import StudentService from "../services/StudentService";
 import RFID_CardService from "../services/RFID_CardService";
 import { Request, Response, NextFunction } from "express";
 import { extractStudentData } from "./utils/extractStudentData";
-import { checkRFIDCardExistence } from "./utils/checkRFIDCardExistence";
 import { Student } from "../types/student.types";
 
 const handleCreateStudent = (
   sequelize: any,
-  studentService: StudentService,
-  rfidCardService: RFID_CardService
+  studentService: StudentService
 ) => {
   return async (
     req: Request,
@@ -26,7 +24,11 @@ const handleCreateStudent = (
       const student = await studentService.createStudent(studentData, {
         transaction,
       });
-
+      if (!student) {
+        return res
+          .status(500)
+          .json({ success: false, msg: "Failed to create student!" });
+      }
       // Commit the transaction to save all changes
       await transaction.commit();
 

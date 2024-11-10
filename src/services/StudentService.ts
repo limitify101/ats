@@ -2,21 +2,21 @@ import Sequelize from "sequelize";
 import { Student } from "../types/student.types";
 
 class StudentService {
-  client: any;
-  models: any;
+  model: any;
   static createStudent: any;
-  constructor(sequelize: any, models: any) {
-    this.client = sequelize;
-    this.models = models;
+  static uploadStudents: any;
+
+  constructor(model: any) {
+    this.model = model;
   }
   /*
   Add a new Student to the database.
     * CSV or Manual.
   */
-  async createStudent(std: Student, p0: { transaction: any }) {
+  async createStudent(std: Student, options: { transaction: any }) {
     try {
-      const student = await this.models.Students.create(std, {
-        transaction: p0.transaction,
+      const student = await this.model.create(std, {
+        transaction: options.transaction,
         validate: true,
       });
       return student;
@@ -24,11 +24,11 @@ class StudentService {
       return err;
     }
   }
-  async uploadStudents(data: Student[], p0: { transaction: any }) {
+  async uploadStudents(data: Student[], options: { transaction: any }) {
     try {
       // Attempt to bulk create students
-      await this.models.Students.bulkCreate(data, {
-        transaction: p0.transaction,
+      await this.model.bulkCreate(data, {
+        transaction: options.transaction,
         validate: true,
       });
     } catch (err: any) {

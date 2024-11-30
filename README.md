@@ -133,16 +133,6 @@ Ensure you have the following installed:
 
 #### GET /api/v1/attendance/:ID - Retrieve a student's attendance record
 
-## Contributing
-
-Contributions are welcome! To get started:
-
-1. Fork the project
-2. Create a new branch (git checkout -b feature/YourFeature)
-3. Commit your changes (git commit -m 'Add some feature')
-4. Push to the branch (git push origin feature/YourFeature)
-5. Open a Pull Request
-
 ### License
 
 ATS © 2024 by Limitify is licensed under CC BY-NC-ND 4.0. To view a copy of this license, visit (`https://creativecommons.org/licenses/by-nc-nd/4.0/`)

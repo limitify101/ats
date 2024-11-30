@@ -94,7 +94,6 @@ Ensure you have the following installed:
 4. Set up the database:
 
    ```bash
-   npx sequelize-cli db:create
    npx sequelize-cli db:migrate
    ```
 

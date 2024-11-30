@@ -133,12 +133,12 @@ Ensure you have the following installed:
 
 #### GET /api/v1/attendance/:ID - Retrieve a student's attendance record
 
-### License
-
-ATS © 2024 by Limitify is licensed under CC BY-NC-ND 4.0. To view a copy of this license, visit (`https://creativecommons.org/licenses/by-nc-nd/4.0/`)
-
 ---
 
 Note: This project requires the setup and configuration of RFID hardware to fully enable the attendance logging feature. Please ensure all RFID components are installed and configured as per the hardware manual.
 
 ---
+
+### License
+
+ATS © 2024 by Limitify is licensed under CC BY-NC-ND 4.0. To view a copy of this license, visit (`https://creativecommons.org/licenses/by-nc-nd/4.0/`)

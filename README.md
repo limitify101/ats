@@ -105,7 +105,7 @@ Ensure you have the following installed:
     npm run dev
    ```
 
-   The server will run on ("http://localhost:3000") by default. You can test the API endpoints via Postman or similar API testing tools.
+   The server will run on (`http://localhost:3000`) by default. You can test the API endpoints via Postman or similar API testing tools.
 
 ## API Endpoints
 

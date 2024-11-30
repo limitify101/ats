@@ -9,13 +9,8 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
-      attendance_status: {
-        type: Sequelize.ENUM("present", "absent", "late"),
-        defaultValue: "absent",
-        allowNull: false,
-      },
-      arrivalTime: {
-        type: Sequelize.DATE,
+      tenantID: {
+        type: Sequelize.UUID,
         allowNull: false,
       },
       studentID: {
@@ -28,6 +23,22 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
+      attendance_status: {
+        type: Sequelize.ENUM("present", "absent", "late", "pending"),
+        defaultValue: "absent",
+        allowNull: false,
+      },
+      arrivalTime: {
+        type: Sequelize.DATE,
+      },
+      notes: {
+        type: Sequelize.STRING,
+      },
+      date: {
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+        defaultValue: Sequelize.fn("now"),
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -39,8 +50,18 @@ module.exports = {
         defaultValue: Sequelize.fn("now"),
       },
     });
+    await queryInterface.addConstraint("Attendance", {
+      fields: ["studentID", "date"],
+      type: "unique",
+      name: "unique_attendance_per_student_per_day", // Custom constraint name
+    });
   },
+
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeConstraint(
+      "Attendance",
+      "unique_attendance_per_student_per_day"
+    );
     await queryInterface.dropTable("Attendance");
   },
 };

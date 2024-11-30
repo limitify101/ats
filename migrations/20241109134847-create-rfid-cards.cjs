@@ -9,6 +9,10 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
       },
+      tenantID: {
+        type: Sequelize.UUID,
+        allowNull: false,
+      },
       rfid_ID: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -26,7 +30,7 @@ module.exports = {
           model: "Students",
           key: "studentID",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
       createdAt: {

@@ -1,9 +1,8 @@
 import csvParser from "csv-parser";
-import StudentService from "../services/StudentService";
+import StudentService from "../../services/StudentService";
 import fs from "fs";
-import { Student } from "../types/student.types";
-import { extractStudentData } from "./utils/extractStudentData";
-import moment from "moment";
+import { Student } from "../../types/student.types";
+import { extractStudentData } from "../utils/extractStudentData";
 
 const handleUpload = (sequelize: any, studentService: StudentService) => {
   return async (req: any, res: any): Promise<any> => {
@@ -22,33 +21,13 @@ const handleUpload = (sequelize: any, studentService: StudentService) => {
         fs.createReadStream(filePath)
           .pipe(csvParser())
           .on("data", (row: any) => {
-            // Parse the date fields and check validity
-            const parsedDateOfBirth = moment(
-              row.dateOfBirth,
-              "YYYY-MM-DD",
-              true
-            );
-            const parsedEnrollmentDate = moment(
-              row.enrollmentDate,
-              "YYYY-MM-DD",
-              true
-            );
-
-            // Validate date format, if invalid, skip the row and track it
-            if (
-              !parsedDateOfBirth.isValid() ||
-              !parsedEnrollmentDate.isValid()
-            ) {
-              skippedRows.push(row); // Track the skipped row for logging or review
-              return; // Skip this row
-            }
-
             // Parse the row into a Student object and push to results
-            const student: Student = extractStudentData({
-              ...row,
-              dateOfBirth: parsedDateOfBirth.toDate(),
-              enrollmentDate: parsedEnrollmentDate.toDate(),
-            });
+            const student: Student = extractStudentData(
+              {
+                ...row,
+              },
+              req.tenantId
+            );
 
             results.push(student); // Add valid student data to results
           })
@@ -77,11 +56,10 @@ const handleUpload = (sequelize: any, studentService: StudentService) => {
     } catch (err: any) {
       // Rollback the transaction in case of error
       await transaction.rollback();
-
-      return res.status(500).json({
+      return res.status(409).json({
         success: false,
         msg: "Error inserting data into database",
-        error: err.message || err, // Return the specific error message
+        error: "Verify the file format or specific fields", // Return the specific error message
       });
     }
   };

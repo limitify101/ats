@@ -1,7 +1,8 @@
 import csvParser from "csv-parser";
-import RFID_CardService from "../services/RFID_CardService";
-import { RFID_CARD } from "../types/rfid_card.types";
+import RFID_CardService from "../../services/RFID_CardService";
+import { RFID_CARD } from "../../types/rfid_card.types";
 import fs from "fs";
+
 const handleRfidUpload = (
   sequelize: any,
   rfidCardService: RFID_CardService
@@ -14,17 +15,18 @@ const handleRfidUpload = (
     const transaction: any = await sequelize.transaction();
     const skippedRows: any[] = []; //To track skipped rows due to invalid data.
     const results: RFID_CARD[] = [];
+    const tenantID = req.tenantId;
     const regex = /^\d{10}$/;
     try {
       await new Promise<void>((resolve, reject) => {
         fs.createReadStream(filePath)
           .pipe(csvParser())
-          .on("data", (row: any) => {
+          .on("data", async (row: any) => {
             if (!regex.test(row.rfid_ID)) {
               skippedRows.push(row);
               return;
             }
-            const card: RFID_CARD = { ...row };
+            const card: RFID_CARD = { ...row, tenantID };
             results.push(card);
           })
           .on("end", () => {
@@ -36,7 +38,9 @@ const handleRfidUpload = (
       });
 
       await rfidCardService.uploadCards(results, { transaction });
+
       await transaction.commit();
+
       return res.status(201).json({
         success: true,
         msg: "File Uploaded",
@@ -46,10 +50,11 @@ const handleRfidUpload = (
       });
     } catch (err: any) {
       await transaction.rollback();
+
       return res.status(409).json({
         success: false,
-        msg: "Error inserting data into database",
-        error: err.message || err,
+        msg: "Error uploading data",
+        error: err.errors[0].message,
       });
     }
   };

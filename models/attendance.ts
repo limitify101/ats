@@ -1,10 +1,13 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, Sequelize } from "sequelize";
 
 interface AttendanceAttributes {
   id: number;
-  attendance_status: "present" | "absent" | "late";
+  tenantID: string;
+  attendance_status: "present" | "absent" | "late" | "pending";
   arrivalTime: Date;
   studentID: string;
+  notes: string;
+  date: string;
 }
 
 const initializeAttendance = (sequelize: any) => {
@@ -13,9 +16,12 @@ const initializeAttendance = (sequelize: any) => {
     implements AttendanceAttributes
   {
     id!: number;
-    attendance_status!: "present" | "absent" | "late";
+    tenantID!: string;
+    attendance_status!: "present" | "absent" | "late" | "pending";
     arrivalTime!: Date;
     studentID!: string;
+    notes!: string;
+    date!: string;
   }
 
   Attendance.init(
@@ -26,14 +32,17 @@ const initializeAttendance = (sequelize: any) => {
         autoIncrement: true,
         allowNull: false,
       },
+      tenantID: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       attendance_status: {
-        type: DataTypes.ENUM("present", "absent", "late"),
-        defaultValue: "absent",
+        type: DataTypes.ENUM("present", "absent", "late", "pending"),
+        defaultValue: "pending",
         allowNull: false,
       },
       arrivalTime: {
         type: DataTypes.DATE,
-        allowNull: false,
       },
       studentID: {
         type: DataTypes.STRING,
@@ -44,6 +53,14 @@ const initializeAttendance = (sequelize: any) => {
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+      },
+      notes: {
+        type: DataTypes.STRING,
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        defaultValue: Sequelize.fn("now"),
       },
     },
     {

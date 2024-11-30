@@ -2,18 +2,13 @@ import { Model, DataTypes } from "sequelize";
 
 interface StudentsAttributes {
   id: string;
+  tenantID: string;
   studentID: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
+  studentName: string;
   gender: string;
   grade: string;
-  enrollmentDate: Date;
   contact: string;
-  address?: string;
-  emergencyContact?: string;
   status: "active" | "graduated";
-  notes?: string;
 }
 
 const initializeStudents = (sequelize: any) => {
@@ -22,18 +17,13 @@ const initializeStudents = (sequelize: any) => {
     implements StudentsAttributes
   {
     id!: string;
+    tenantID!: string;
     studentID!: string;
-    firstName!: string;
-    lastName!: string;
-    dateOfBirth!: Date;
+    studentName!: string;
     gender!: string;
     grade!: string;
-    enrollmentDate!: Date;
     contact!: string;
-    address?: string;
-    emergencyContact?: string;
     status!: "active" | "graduated";
-    notes?: string;
   }
 
   Students.init(
@@ -43,21 +33,17 @@ const initializeStudents = (sequelize: any) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
+      tenantID: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       studentID: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
       },
-      firstName: {
+      studentName: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      dateOfBirth: {
-        type: DataTypes.DATE,
         allowNull: false,
       },
       gender: {
@@ -68,27 +54,14 @@ const initializeStudents = (sequelize: any) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      enrollmentDate: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
       contact: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      address: {
-        type: DataTypes.STRING,
-      },
-      emergencyContact: {
-        type: DataTypes.STRING,
       },
       status: {
         type: DataTypes.ENUM("active", "graduated", "expelled"),
         allowNull: false,
         defaultValue: "active",
-      },
-      notes: {
-        type: DataTypes.TEXT,
       },
     },
     {

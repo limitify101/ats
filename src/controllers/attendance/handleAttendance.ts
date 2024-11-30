@@ -1,33 +1,46 @@
-import { Request, Response } from "express";
-import AttendanceService from "../services/AttendanceService";
-import { Attendance, ScanData } from "../types/attendance.types";
+import { Response } from "express";
+import AttendanceService from "../../services/AttendanceService";
+import { Attendance, ScanData } from "../../types/attendance.types";
 import moment from "moment";
-import { getStudentWithRFID } from "../helpers/rfidHelper";
+import { getStudentWithRFID } from "../../helpers/rfidHelper";
 import { Op } from "sequelize";
-// Define the late time range constants
-const LATE_START_TIME = "08:01"; // start of late period (e.g., 8 AM)
-const LATE_END_TIME = "17:00"; // end of late period (e.g., 2 PM)
 
 const handleAttendance = (
   sequelize: any,
   attendanceService: AttendanceService,
   models: any
 ) => {
-  return async (req: Request, res: Response): Promise<any> => {
+  return async (req: any, res: Response): Promise<any> => {
+    const tenantID = req.tenantId;
     const transaction = await sequelize.transaction();
+
     try {
       const Log: ScanData = req.body;
       const validArrivalTimeFormat = moment(Log.arrivalTime).format(
-        "MMM DD, YYYY HH:mm:ss"
+        "YYYY-MM-DD HH:mm:ss"
       );
-      console.log(validArrivalTimeFormat);
       const parsedArrivalTime = moment(
         Log.arrivalTime,
-        "MMM DD, YYYY HH:mm:ss"
+        "YYYY-MM-DD HH:mm:ss"
       ).format("HH:mm"); // Parse time in 24-hour format
-      console.log(parsedArrivalTime);
+
+      // Fetch tenant-specific attendance settings
+      const settings = await models.AttendanceSettings.findOne({
+        where: { tenantID },
+      });
+
+      if (!settings) {
+        return res.status(400).json({
+          success: false,
+          msg: "Attendance settings not configured for this tenant",
+        });
+      }
+
+      const LATE_START_TIME = settings.startTime; // Start of late period
+      const LATE_END_TIME = settings.endTime; // End of late period
+
       // Check if the student exists with the provided RFID
-      const student = await getStudentWithRFID(Log.rfid_ID, models);
+      const student = await getStudentWithRFID(Log.rfid_ID, models, tenantID);
       if (!student) {
         return res.status(404).json({
           success: false,
@@ -35,6 +48,7 @@ const handleAttendance = (
           error: "Unauthorized",
         });
       }
+
       // Define attendance status based on arrival time
       let attendanceStatus: "present" | "late" | "absent" = "present";
 
@@ -52,18 +66,36 @@ const handleAttendance = (
       const existingAttendance = await models.Attendance.findOne({
         where: {
           studentID: student.studentID,
-          createdAt: {
-            [Op.gte]: today.toDate(), // Records from today only
-          },
+          date: today.format("YYYY-MM-DD"),
+          tenantID,
         },
       });
 
-      if (!existingAttendance) {
+      if (existingAttendance) {
+        if (existingAttendance.attendance_status === "pending") {
+          // Allow update if attendance is still pending
+          await existingAttendance.update(
+            {
+              arrivalTime: validArrivalTimeFormat,
+              attendance_status: attendanceStatus,
+            },
+            { transaction }
+          );
+        } else {
+          // Disallow update if attendance is already marked as present or late
+          return res.status(400).json({
+            success: false,
+            msg: "Attendance already marked. Updates are not allowed.",
+          });
+        }
+      } else {
         // Log attendance if no record exists for today
         const attendance: Attendance = {
           studentID: student.studentID,
           arrivalTime: validArrivalTimeFormat,
           attendance_status: attendanceStatus,
+          date: today.format("YYYY-MM-DD"),
+          tenantID,
         };
 
         await attendanceService.log(attendance, { transaction });

@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 
 interface RFID_CardsAttributes {
   rfid_ID: string;
+  tenantID: string;
   id: string;
   activated: boolean;
   studentID?: string | null;
@@ -13,6 +14,7 @@ const initializeRFIDCards = (sequelize: any) => {
     implements RFID_CardsAttributes
   {
     id!: string;
+    tenantID!: string;
     rfid_ID!: string;
     activated!: boolean;
     studentID?: string | null;
@@ -24,6 +26,10 @@ const initializeRFIDCards = (sequelize: any) => {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
+      tenantID: {
+        type: DataTypes.UUID,
         allowNull: false,
       },
       rfid_ID: {
@@ -39,11 +45,12 @@ const initializeRFIDCards = (sequelize: any) => {
       studentID: {
         type: DataTypes.STRING,
         allowNull: true,
+        unique: true,
         references: {
           model: "Students", // Ensure this matches the actual model name
           key: "studentID",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
     },

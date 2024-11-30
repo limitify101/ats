@@ -7,14 +7,22 @@ export default {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     pool: {
-      max: 20,
-      min: 2,
-      acquire: 30000,
-      idle: 10000,
+      max: 30, // Allow more connections during development
+      min: 5, // Maintain a reasonable minimum
+      acquire: 30000, // Wait longer to acquire a connection
+      idle: 10000, // Release idle connections after 10 seconds
     },
+    logging: false, // Enable logging for debugging
     host: "localhost",
     dialect: "postgres",
+    dialectOptions: {
+      keepAlive: true, // Maintain idle connections
+    },
+    retry: {
+      max: 5, // Retry failed queries
+    },
   },
+
   test: {
     username: "root",
     password: null,

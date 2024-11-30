@@ -8,21 +8,17 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
+      tenantID: {
+        type: Sequelize.UUID,
+        allowNull: false,
+      },
       studentID: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
       },
-      firstName: {
+      studentName: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      lastName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      dateOfBirth: {
-        type: Sequelize.DATE,
         allowNull: false,
       },
       gender: {
@@ -33,27 +29,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      enrollmentDate: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       contact: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      address: {
-        type: Sequelize.STRING,
-      },
-      emergencyContact: {
-        type: Sequelize.STRING,
       },
       status: {
         type: Sequelize.ENUM("active", "graduated", "expelled"),
         allowNull: false,
         defaultValue: "active",
-      },
-      notes: {
-        type: Sequelize.TEXT,
       },
       createdAt: {
         type: Sequelize.DATE,

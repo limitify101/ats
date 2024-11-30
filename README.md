@@ -102,7 +102,7 @@ Ensure you have the following installed:
 1. Start the server:
 
    ```bash
-    npm start
+    npm run dev
    ```
 
    The server will run on http://localhost:3000 by default. You can test the API endpoints via Postman or similar API testing tools.

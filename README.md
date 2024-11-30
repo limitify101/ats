@@ -152,12 +152,3 @@ ATS © 2024 by Limitify is licensed under CC BY-NC-ND 4.0. To view a copy of thi
 Note: This project requires the setup and configuration of RFID hardware to fully enable the attendance logging feature. Please ensure all RFID components are installed and configured as per the hardware manual.
 
 ---
-
-Replace the placeholder path for the banner image above (![Project Banner](./path/to/your/banner.png)) with the actual location of your project logo or banner file.
-
-### Instructions:
-
-- Update the placeholders (like `https://github.com/yourusername/attendance-tracking-system.git` and the `.env` example) to match your project’s details.
-- Replace the banner image path (`![Project Banner](./path/to/your/banner.png)`) with the actual path of your project's logo/banner image.
-
-This `README.md` will guide users on setting up, running, and contributing to the Attendance Tracking System project.

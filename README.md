@@ -1,7 +1,7 @@
 # ATS
 
 <div align="center">
-	<img width="60%" src="./ATS%20Banner.jpg">
+	<img width="100%" src="./ATS%20Banner.png">
 </div>
 
 ---
@@ -112,13 +112,13 @@ Ensure you have the following installed:
 
 ### Students
 
-#### POST /api/v1/students - Create a new student (/create OR /upload)
+#### POST /api/v1/student - Create a new student (/create OR /upload)
 
-#### GET /api/v1//students/:id - Get a student by ID
+#### GET /api/v1//student/:id - Get a student by ID
 
-#### PUT /api/v1/students/:id - Update student information
+#### PUT /api/v1/student/:id - Update student information
 
-#### DELETE /api/v1/students/:id - Remove a student
+#### DELETE /api/v1/student/:id - Remove a student
 
 ### RFID Cards
 
@@ -132,7 +132,7 @@ Ensure you have the following installed:
 
 #### POST /api/v1/attendance/log - Log attendance when a card is scanned
 
-#### GET /api/v1/attendance/:studentID - Retrieve a student's attendance record
+#### GET /api/v1/attendance/:ID - Retrieve a student's attendance record
 
 ## Contributing
 

@@ -132,7 +132,7 @@ app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
 
 // Static file handling (frontend app)
 app.get("*", (req: any, res: any) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/", "index.html"));
 });
 
 export default app;

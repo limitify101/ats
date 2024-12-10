@@ -19,7 +19,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Static files and middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../frontend/index.html")));
+app.use(express.static(path.join(__dirname, "../app/dist/index.html")));
 app.use(express.json());
 
 // Function to initialize attendance cron jobs
@@ -132,7 +132,7 @@ app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
 
 // Static file handling (frontend app)
 app.get("*", (req: any, res: any) => {
-  res.sendFile(path.join(__dirname, "../frontend/", "index.html"));
+  res.sendFile(path.join(__dirname, "../app/dist", "index.html"));
 });
 
 export default app;

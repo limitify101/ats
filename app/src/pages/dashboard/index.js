@@ -1,0 +1,11 @@
+export * from "@/pages/dashboard/home";
+export * from "@/pages/dashboard/profile";
+export * from "@/pages/dashboard/notifications";
+export * from "@/pages/dashboard/studentAttendance";
+export * from "@/pages/dashboard/staffAttendance";
+export * from "@/pages/dashboard/reports";
+export * from "@/pages/dashboard/register";
+export {default as RFID} from "@/pages/dashboard/rfid";
+export * from "@/pages/dashboard/studentRegister";
+export * from "@/pages/dashboard/staffRegister";
+export * from "@/pages/dashboard/StudentReports";

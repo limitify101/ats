@@ -43,11 +43,11 @@ export const useStudentsData = (studentID) => {
 
   // Error handling
   if (studentsError || activeStudentsError || unassignedStudentsError || studentError) {
-    console.error("Error fetching student data", {
-      studentsError,
-      activeStudentsError,
-      unassignedStudentsError,
-    });
+    // console.error("Error fetching student data", {
+    //   studentsError,
+    //   activeStudentsError,
+    //   unassignedStudentsError,
+    // });
   }
   return {
     students:students,

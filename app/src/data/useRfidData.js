@@ -12,27 +12,26 @@ export const useRfidData = () => {
         queryKey:["rfidCards"],
         queryFn:()=>fetchData("rfid/list",tenantId),
         staleTime: 30000,
+        enabled:!!tenantId
     });
     
     const {data:activeCards,error:activeCardsError} = useQuery({
         queryKey:["activeCards"],
         queryFn:()=>fetchData("rfid/count-active",tenantId),
         staleTime: 30000,
+        enabled:!!tenantId
     });
 
     const {data:unassignedCards,error:unassignedCardsError} = useQuery({
         queryKey:["unassignedCards"],
         queryFn:()=>fetchData("rfid/count-inactive",tenantId),
         staleTime: 30000,
+        enabled:!!tenantId
     });
 
     //Error handling
     if(rfidError || activeCardsError || unassignedCardsError){
-        console.error("Error fetching rfid data",{
-            rfidError,
-            activeCardsError,
-            unassignedCardsError
-        })
+         
     }
 
     return {

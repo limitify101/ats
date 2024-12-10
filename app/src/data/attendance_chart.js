@@ -20,12 +20,7 @@ export const useChartsData = (month) => {
     staleTime:30000,
     enabled: !!tenantId
   })
-  if(classesError){
-    console.error("Error fetching classrooms",classesError);
-  }
-  if(weeklyAttendanceError){
-    console.error("Error fetching weekly attendance summary",weeklyAttendanceError);
-  } 
+
    const classNames = Array.isArray(report?.data?.metadata) && report?.data?.metadata.slice() // Create a shallow copy of the array to avoid mutating the original
   .sort((a, b) => {
     // Sorting by `data.class`, assuming it's a string

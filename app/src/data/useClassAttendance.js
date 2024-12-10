@@ -31,9 +31,7 @@ export const useClassAttendanceData = (date) => {
         staleTime: 30000,
     })
     //Error handling
-    if(classAttendanceError||presenceError||lateError){
-        console.log("Error fetching class attendance",{classAttendanceError,presenceError});
-    }
+
     return {
         classAttendance:classAttendance?classAttendance.data:[],
         presence:presence?presence.data:0,

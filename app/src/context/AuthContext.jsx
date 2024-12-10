@@ -102,7 +102,7 @@ export function AuthProvider({ children }) {
       // Create client
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/v1/client/create",
+          "https://ats-phyn.onrender.com/api/v1/client/create",
           {},
           {
             headers: {

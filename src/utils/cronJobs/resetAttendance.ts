@@ -37,8 +37,8 @@ async function initializeCronJobs(
       throw new Error(`Missing startTime or endTime for tenantID: ${tenantID}`);
     }
 
-    // Schedule initializeDailyAttendance at 6 AM, Monday to Friday
-    const initializeAttendanceSchedule = "0 6 * * 1-5";
+    // Schedule initializeDailyAttendance at 6 AM, Monday to Friday in Kigali
+    const initializeAttendanceSchedule = "0 4 * * 1-5";
 
     cron.schedule(
       initializeAttendanceSchedule,

@@ -18,12 +18,7 @@ export const useClassData = () => {
         queryFn:()=>fetchData("attendance/class-present",tenantId),
         staleTime:30000,
     })
-    //Error handling
-    if(classesError){
-        console.error("Error fetching classrooms",classesError);
-    } else if(attendanceLogError){
-        console.error("Error fetching attendance",attendanceLogError)
-    }
+
     return {
         classes:classes?classes:[],
         attendanceLog:attendanceLog?attendanceLog?.presence:null,

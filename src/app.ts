@@ -64,7 +64,7 @@ SYNC_DB();
 app.use("/api/v1/client", clientRoutes(db.sequelize, db.AttendanceSettings));
 app.use(
   "/api/v1/student",
-  studentRoutes(db.sequelize, db.Students, db.RFID_Cards)
+  studentRoutes(db.sequelize, db.Students, db.RFID_Cards, db.Attendance)
 );
 app.use("/api/v1/rfid", rfidRoutes(db.sequelize, db));
 app.use("/api/v1/attendance", attendanceRoutes(db.sequelize, db));

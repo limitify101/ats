@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import AttendanceService from "../../services/AttendanceService";
-import dayjs from "dayjs";
+
 export const classAttendance = (
   sequelize: any,
   attendance: AttendanceService,
@@ -31,6 +31,7 @@ export const classAttendance = (
           studentName: `${record["student.studentName"]}`,
           studentID: record["student.studentID"],
           status: record.attendance_status,
+          arrivalTime: record.arrivalTime,
           notes: record.notes || "N/A",
         };
 
@@ -54,8 +55,8 @@ export const classAttendance = (
         msg: "Fetched class attendance",
         data: groupedData,
       });
-    } catch (error) {
-      console.error("Error fetching attendance details:", error);
+    } catch (err) {
+      console.error("Error fetching attendance details:", err);
       res.status(500).json({ message: "Error fetching attendance details" });
     }
   };

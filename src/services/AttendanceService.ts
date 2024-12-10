@@ -1,5 +1,37 @@
 import { Op, Sequelize } from "sequelize";
 import { Attendance } from "../types/attendance.types";
+import dayjs from "dayjs";
+interface AttendanceConditions {
+  month: string; // E.g., "November"
+  year: number; // E.g., 2024
+}
+interface GradeMetadata {
+  class: string; // E.g., "P1", "S1"
+  totalStudents: number;
+  male: number;
+  female: number;
+  attendances: number;
+  late: number;
+  absences: number;
+}
+interface ReportData {
+  month: string;
+  totalStudents: number;
+  totalMales: number;
+  totalFemales: number;
+  attendances: number;
+  lateArrivals: number;
+  absences: number;
+  metadata: Array<{
+    class: string;
+    totalStudents: number;
+    male: number;
+    female: number;
+    attendances: number;
+    late: number;
+    absences: number;
+  }>;
+}
 
 class AttendanceService {
   model: any;
@@ -111,7 +143,7 @@ class AttendanceService {
             attributes: ["studentID", "studentName", "grade"],
           },
         ],
-        attributes: ["attendance_status", "notes"], // Include attendance-related fields
+        attributes: ["attendance_status", "arrivalTime", "notes"], // Include attendance-related fields
         where: {
           date: {
             [Op.eq]: date,
@@ -215,6 +247,7 @@ class AttendanceService {
       throw err;
     }
   }
+
   async manualAttendance(log: any, tenantID: any, transaction: any) {
     try {
       if (!log || !log.date) {
@@ -292,6 +325,204 @@ class AttendanceService {
     } catch (err: any) {
       console.error("Error during manual attendance:", err.message);
       throw err; // Ensure the error propagates to the controller
+    }
+  }
+  async weeklyAttendance(tenantID: any) {
+    try {
+      const today = new Date();
+      const startOfWeek = new Date(
+        today.setDate(today.getDate() - today.getDate() + 1)
+      ); //Monday
+      const endOfWeek = new Date(
+        today.setDate(today.getDate() - today.getDate() + 5)
+      ); //Friday
+      const attendanceData = await this.model.findAll({
+        where: {
+          date: {
+            [Op.between]: [
+              startOfWeek,
+              endOfWeek,
+            ],
+          },
+          tenantID: tenantID,
+        },
+        attributes: ["date", "attendance_status"],
+      });
+      const summary: any = {};
+      ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].forEach(
+        (day, i) => {
+          const dayDate: any = new Date(startOfWeek);
+          dayDate.setDate(startOfWeek.getDate() + i);
+          const dayData: any = attendanceData.filter(
+            (record: any) =>
+              new Date(record.date).toDateString() === dayDate.toDateString()
+          );
+          summary[day] = {
+            present: dayData.filter(
+              (record: any) => record.attendance_status === "present"
+            ).length,
+            late: dayData.filter(
+              (record: any) => record.attendance_status === "late"
+            ).length,
+            absent: dayData.filter(
+              (record: any) => record.attendance_status === "absent"
+            ).length,
+          };
+        }
+      );
+
+      return summary;
+    } catch (err: any) {
+      throw err;
+    }
+  }
+  async generateReport(
+    conditions: AttendanceConditions,
+    Students: any,
+    tenantID: any
+  ): Promise<ReportData | null> {
+    try {
+      const { month, year } = conditions;
+      if (!month && !year) {
+        return null;
+      }
+      const monthMap: Record<string, number> = {
+        January: 1,
+        February: 2,
+        March: 3,
+        April: 4,
+        May: 5,
+        June: 6,
+        July: 7,
+        August: 8,
+        September: 9,
+        October: 10,
+        November: 11,
+        December: 12,
+      };
+
+      const monthNumber = monthMap[month];
+      if (!monthNumber) {
+        throw new Error("Invalid month provided.");
+      }
+
+      const results = await this.model.findAll({
+        where: {
+          createdAt: {
+            [Op.between]: [
+              new Date(year, monthNumber - 1, 1),
+              new Date(year, monthNumber, 0, 23, 59, 59),
+            ],
+          },
+          tenantID: tenantID,
+        },
+        include: [
+          {
+            model: Students,
+            attributes: ["studentID", "grade", "gender"],
+            as: "student",
+          },
+        ],
+        raw: true,
+      });
+
+      if (results.length === 0) {
+        return null;
+      }
+
+      // Track unique students by grade and gender
+      const uniqueStudentsByGrade: Record<string, Map<string, string>> = {};
+      const gradesSummary: Record<string, GradeMetadata> = {};
+
+      // Global gender counters
+      let totalMales = 0;
+      let totalFemales = 0;
+
+      // Initialize summary counters
+      const summary = { attendances: 0, late: 0, absences: 0 };
+
+      for (const record of results) {
+        const grade =
+          record["student.grade"].match(/^[A-Za-z]+\d+/)?.[0] || "Unknown";
+        const studentID = record["student.studentID"];
+        const gender = record["student.gender"];
+        const status = record.attendance_status;
+
+        // Ensure grade exists in uniqueStudentsByGrade
+        if (!uniqueStudentsByGrade[grade]) {
+          uniqueStudentsByGrade[grade] = new Map();
+        }
+
+        // Add unique students to the grade with their gender
+        uniqueStudentsByGrade[grade].set(studentID, gender);
+
+        // Ensure grade exists in gradesSummary
+        if (!gradesSummary[grade]) {
+          gradesSummary[grade] = {
+            class: grade,
+            totalStudents: 0,
+            male: 0,
+            female: 0,
+            attendances: 0,
+            late: 0,
+            absences: 0,
+          };
+        }
+
+        const gradeData = gradesSummary[grade];
+
+        // Increment attendance counters
+        if (status === "present") {
+          summary.attendances += 1;
+          gradeData.attendances += 1;
+        }
+        if (status === "late") {
+          summary.late += 1;
+          gradeData.late += 1;
+        }
+        if (status === "absent") {
+          summary.absences += 1;
+          gradeData.absences += 1;
+        }
+      }
+
+      // Calculate gender counts and total students from unique students
+      for (const grade in uniqueStudentsByGrade) {
+        const uniqueStudents = uniqueStudentsByGrade[grade];
+        gradesSummary[grade].totalStudents = uniqueStudents.size;
+        gradesSummary[grade].male = Array.from(uniqueStudents.values()).filter(
+          (gender) => gender === "Male"
+        ).length;
+        gradesSummary[grade].female = Array.from(
+          uniqueStudents.values()
+        ).filter((gender) => gender === "Female").length;
+
+        // Add to global gender counters
+        totalMales += gradesSummary[grade].male;
+        totalFemales += gradesSummary[grade].female;
+      }
+
+      // Format the metadata
+      const metadata = Object.values(gradesSummary);
+
+      // Final report
+      const report: ReportData = {
+        month,
+        totalStudents: Object.values(uniqueStudentsByGrade).reduce(
+          (acc, uniqueStudents) => acc + uniqueStudents.size,
+          0
+        ),
+        totalMales, // New field for total males
+        totalFemales, // New field for total females
+        attendances: summary.attendances,
+        lateArrivals: summary.late,
+        absences: summary.absences,
+        metadata,
+      };
+
+      return report;
+    } catch (err) {
+      throw err;
     }
   }
 }

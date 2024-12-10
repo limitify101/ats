@@ -12,6 +12,8 @@ import {
 } from "../controllers/attendance/attendanceCount";
 import { classAttendance } from "../controllers/attendance/classAttendance";
 import manualAttendance from "../controllers/attendance/manualAttendance";
+import reportAttendance from "../controllers/attendance/reportAttendance";
+import weeklyAttendance from "../controllers/attendance/weeklyAttendance";
 
 const attendanceRoutes = (sequelize: any, models: any) => {
   const router = express.Router();
@@ -58,6 +60,16 @@ const attendanceRoutes = (sequelize: any, models: any) => {
     "/manual",
     extractTenantId,
     manualAttendance(sequelize, attendanceService)
+  );
+  router.get(
+    "/weekly-summary",
+    extractTenantId,
+    weeklyAttendance(sequelize, attendanceService)
+  );
+  router.get(
+    "/report",
+    extractTenantId,
+    reportAttendance(sequelize, attendanceService, models.Students)
   );
   return router;
 };

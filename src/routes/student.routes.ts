@@ -8,8 +8,14 @@ import listStudents from "../controllers/students/listStudents";
 import extractTenantId from "../middleware/extractTenantID";
 import listClasses from "../controllers/students/listClasses";
 import handleDeleteStudent from "../controllers/students/deleteStudent";
+import viewStudent from "../controllers/students/viewStudent";
 
-const studentRoutes = (sequelize: any, Students: any, RFID_Cards: any) => {
+const studentRoutes = (
+  sequelize: any,
+  Students: any,
+  RFID_Cards: any,
+  Attendance: any
+) => {
   const router = express.Router();
 
   const studentService = new StudentService(Students);
@@ -29,6 +35,11 @@ const studentRoutes = (sequelize: any, Students: any, RFID_Cards: any) => {
     "/delete/:ID",
     extractTenantId,
     handleDeleteStudent(sequelize, studentService, RFID_Cards)
+  );
+  router.get(
+    "/search/:ID",
+    extractTenantId,
+    viewStudent(sequelize, studentService, Attendance, RFID_Cards)
   );
   router.get(
     "/list",

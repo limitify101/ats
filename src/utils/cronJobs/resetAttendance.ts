@@ -26,8 +26,6 @@ async function initializeCronJobs(
   }
 
   try {
-    console.log("Initializing cron jobs for tenant:", tenantID);
-
     const attendanceSettings = await clientService.getClientSettings(tenantID);
     if (!attendanceSettings) {
       console.error(`Attendance settings not found for tenantID: ${tenantID}`);
@@ -39,8 +37,8 @@ async function initializeCronJobs(
       throw new Error(`Missing startTime or endTime for tenantID: ${tenantID}`);
     }
 
-    // Schedule initializeDailyAttendance at 6 AM
-    const initializeAttendanceSchedule = "0 6 * * *";
+    // Schedule initializeDailyAttendance at 6 AM, Monday to Friday
+    const initializeAttendanceSchedule = "0 6 * * 1-5";
 
     cron.schedule(
       initializeAttendanceSchedule,
@@ -60,10 +58,10 @@ async function initializeCronJobs(
       SYSTEM_TIMEZONE
     );
 
-    // Schedule setAbsentForPendingStudents at the endTime
+    // Schedule setAbsentForPendingStudents at the endTime, Monday to Friday
     const setAbsentSchedule = `0 ${endTime.split(":")[1]} ${
       endTime.split(":")[0]
-    } * * *`;
+    } * * 1-5`;
 
     cron.schedule(
       setAbsentSchedule,
@@ -84,8 +82,6 @@ async function initializeCronJobs(
       setAbsentSchedule,
       SYSTEM_TIMEZONE
     );
-
-    console.log(`Cron jobs initialized for tenant: ${tenantID}`);
   } catch (error) {
     throw error;
   }

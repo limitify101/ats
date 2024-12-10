@@ -83,6 +83,81 @@ class StudentService {
       throw err;
     }
   }
+  async getStudent(
+    studentID: any,
+    tenantID: any,
+    Attendance: any,
+    RFID_Cards: any
+  ) {
+    try {
+      // Fetch the student and associated data
+      const student = await this.model.findOne({
+        where: {
+          studentID: studentID,
+          tenantID: tenantID,
+        },
+        include: [
+          {
+            model: Attendance,
+            as: "attendance",
+          },
+          {
+            model: RFID_Cards,
+            as: "rfidCard",
+          },
+        ],
+      });
+
+      // If the student is not found, handle the case
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      // Calculate attendance statistics
+      const attendanceRecords = student.attendance || [];
+      const totalRecords = attendanceRecords.length;
+
+      const presentCount = attendanceRecords.filter(
+        (record: any) => record.attendance_status === "present"
+      ).length;
+      const lateCount = attendanceRecords.filter(
+        (record: any) => record.attendance_status === "late"
+      ).length;
+      const absentCount = attendanceRecords.filter(
+        (record: any) => record.attendance_status === "absent"
+      ).length;
+
+      const presentPercentage = totalRecords
+        ? ((presentCount / totalRecords) * 100).toFixed(2) + "%"
+        : "0%";
+      const latePercentage = totalRecords
+        ? ((lateCount / totalRecords) * 100).toFixed(2) + "%"
+        : "0%";
+      const absentPercentage = totalRecords
+        ? ((absentCount / totalRecords) * 100).toFixed(2) + "%"
+        : "0%";
+
+      // Construct the output format
+      const result = {
+        studentID: student.studentID,
+        name: `${student.studentName}`,
+        gender: student.gender,
+        grade: student.grade,
+        contact: student.contact,
+        status: student.status,
+        present: presentPercentage,
+        late: latePercentage,
+        absent: absentPercentage,
+        cardID: student.rfidCard?.rfid_ID || "N/A",
+        cardActive: student.rfidCard?.activated,
+      };
+
+      return result;
+    } catch (err: any) {
+      throw err;
+    }
+  }
+
   async listClasses(tenantID: any) {
     try {
       const results = await this.model.findAll({
@@ -105,10 +180,6 @@ class StudentService {
       console.error("Error fetching distinct grades:", err);
       throw err;
     }
-  }
-  //Get users form the database by Class
-  async getAllStudentsbyClass() {
-    return "Getting all students from database";
   }
 
   //Verify whether the Student ID is registered on user.

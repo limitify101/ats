@@ -15,12 +15,7 @@ const config = (await import(path.join(__dirname, "../config/config.js")))
 const db: any = {};
 
 let sequelize: Sequelize;
-sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-);
+sequelize = new Sequelize(config.url, config);
 const Students = initializeStudents(sequelize);
 const RFID_Cards = initializeRFIDCards(sequelize);
 const Attendance = initializeAttendance(sequelize);

@@ -24,11 +24,20 @@ export default {
   },
 
   test: {
-    username: "root",
-    password: null,
-    database: "database_test",
-    host: "localhost",
+    url: process.env.TEST_DB_HOST, // Use the connection string
     dialect: "postgres",
+    pool: {
+      max: 30, // Allow more connections during development
+      min: 5, // Maintain a reasonable minimum
+      acquire: 30000, // Wait longer to acquire a connection
+      idle: 10000, // Release idle connections after 10 seconds
+    },
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // Required for many managed PostgreSQL services like Render
+      },
+    },
   },
   production: {
     username: "root",

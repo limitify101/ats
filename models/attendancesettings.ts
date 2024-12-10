@@ -29,6 +29,7 @@ const initializeAttendanceSettings = (sequelize: any) => {
       tenantID: {
         type: DataTypes.UUID,
         allowNull: false,
+        unique: true,
       },
       startTime: {
         type: DataTypes.TIME,

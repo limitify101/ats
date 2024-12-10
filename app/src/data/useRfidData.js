@@ -29,10 +29,6 @@ export const useRfidData = () => {
         enabled:!!tenantId
     });
 
-    //Error handling
-    if(rfidError || activeCardsError || unassignedCardsError){
-         
-    }
 
     return {
         rfidCards:rfidCards,

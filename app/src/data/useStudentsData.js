@@ -41,14 +41,6 @@ export const useStudentsData = (studentID) => {
     enabled:!!tenantId
   });
 
-  // Error handling
-  if (studentsError || activeStudentsError || unassignedStudentsError || studentError) {
-    // console.error("Error fetching student data", {
-    //   studentsError,
-    //   activeStudentsError,
-    //   unassignedStudentsError,
-    // });
-  }
   return {
     students:students,
     student:student?student.data:null,

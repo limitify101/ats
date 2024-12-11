@@ -5,6 +5,7 @@ import studentRoutes from "./routes/student.routes";
 import rfidRoutes from "./routes/rfid.routes";
 import attendanceRoutes from "./routes/attendance.routes";
 import db from "../models";
+import fs from "fs";
 import clientRoutes from "./routes/client.routes";
 import ClientService from "./services/ClientService";
 import initializeCronJobs, {
@@ -19,6 +20,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Static files and middleware
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../templates")));
 app.use(express.static(path.join(__dirname, "../app/dist")));
 app.use(express.json());
 
@@ -95,7 +97,7 @@ app.post(
 );
 //Cron Job info
 
-const TIMEZONE = "Africa/Kigali";
+// const TIMEZONE = "Africa/Kigali";
 
 app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
   try {
@@ -111,14 +113,12 @@ app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
     // Convert to Africa/Kigali timezone
     const response = {
       initializeAttendance: initializeAttendanceTime
-        ? DateTime.fromJSDate(initializeAttendanceTime)
-            .setZone(TIMEZONE)
-            .toFormat("yyyy-MM-dd HH:mm:ss")
+        ? DateTime.fromJSDate(initializeAttendanceTime).toFormat(
+            "yyyy-MM-dd HH:mm:ss"
+          )
         : null,
       setAbsent: setAbsentTime
-        ? DateTime.fromJSDate(setAbsentTime)
-            .setZone(TIMEZONE)
-            .toFormat("yyyy-MM-dd HH:mm:ss")
+        ? DateTime.fromJSDate(setAbsentTime).toFormat("yyyy-MM-dd HH:mm:ss")
         : null,
     };
 
@@ -129,33 +129,40 @@ app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
     });
   }
 });
-
-// Static file handling (frontend app)
-app.get("*", (req: any, res: any) => {
-  res.sendFile(path.join(__dirname, "../app/dist", "index.html"));
-});
-
 app.get("/student/download-template", (req: any, res: any) => {
   const filePath = path.join(
     __dirname,
-    "../templates/",
+    "../templates",
     "Students_Template.csv"
   );
-  res.download(filePath, "Students_Template.csv", (err: any) => {
+
+  fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
-      console.error("Error sending file:", err);
-      res.status(500).send("Error downloading the file");
+      console.error("File not found:", err.message);
+      return res.status(404).send("Template not found");
     }
+
+    res.download(filePath, "Students_Template.csv", (err: any) => {
+      if (err) {
+        console.error("Error sending file:", err.message);
+        res.status(500).send("Error downloading the file");
+      }
+    });
   });
 });
 app.get("/card/download-template", (req: any, res: any) => {
-  const filePath = path.join(__dirname, "../templates/", "Card_Template.csv");
+  const filePath = path.join(__dirname, "../templates", "Card_Template.csv");
   res.download(filePath, "Card_Template.csv", (err: any) => {
     if (err) {
       console.error("Error sending file:", err);
       res.status(500).send("Error downloading the file");
     }
   });
+});
+
+// Static file handling (frontend app)
+app.get("*", (req: any, res: any) => {
+  res.sendFile(path.join(__dirname, "../app/dist", "index.html"));
 });
 
 export default app;

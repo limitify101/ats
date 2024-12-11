@@ -281,7 +281,7 @@ export function StudentRegister() {
             <Button color="light-blue" onClick={() => handleFileUpload("student/upload", currentUser.id, file)} disabled={!file}>
               Upload
             </Button>
-            <Button color="blue-gray" onClick={handleDownloadTemplate()} variant='outlined'>
+            <Button color="blue-gray" onClick={() => handleDownloadTemplate()} variant='outlined'>
               Download Template
             </Button>
           </div>

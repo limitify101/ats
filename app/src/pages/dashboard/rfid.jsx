@@ -280,7 +280,7 @@ function RFID() {
                   <Button color="light-blue" onClick={() => handleFileUpload("rfid/upload", currentUser.id, file)} disabled={!file}>
                     Upload
                   </Button>
-                  <Button color="blue-gray" onClick={handleDownloadTemplate()} variant='outlined'>
+                  <Button color="blue-gray" onClick={() => handleDownloadTemplate()} variant='outlined'>
                     Download Template
                   </Button>
                 </div>

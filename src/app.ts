@@ -138,7 +138,7 @@ app.get("*", (req: any, res: any) => {
 app.get("/student/download-template", (req: any, res: any) => {
   const filePath = path.join(
     __dirname,
-    "../templates",
+    "../templates/",
     "Students_Template.csv"
   );
   res.download(filePath, "Students_Template.csv", (err: any) => {
@@ -149,7 +149,7 @@ app.get("/student/download-template", (req: any, res: any) => {
   });
 });
 app.get("/card/download-template", (req: any, res: any) => {
-  const filePath = path.join(__dirname, "../templates", "Card_Template.csv");
+  const filePath = path.join(__dirname, "../templates/", "Card_Template.csv");
   res.download(filePath, "Card_Template.csv", (err: any) => {
     if (err) {
       console.error("Error sending file:", err);

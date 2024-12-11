@@ -75,6 +75,28 @@ export function StudentRegister() {
       toast("Fill out all required fields", { type: "error" });
     }
   };
+  function handleDownloadTemplate() {
+    fetch('/student/download-template') // Replace with your backend URL
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to download template');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'Student_Template.csv'; // Set the file name for download
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error('Error downloading the template:', error);
+      });
+  }
   const studentOperations = async (status, card, studentID) => {
     if (card && status === "active") {
       try {
@@ -259,7 +281,7 @@ export function StudentRegister() {
             <Button color="light-blue" onClick={() => handleFileUpload("student/upload", currentUser.id, file)} disabled={!file}>
               Upload
             </Button>
-            <Button color="blue-gray" onClick={() => { console.log("Template") }} variant='outlined'>
+            <Button color="blue-gray" onClick={handleDownloadTemplate()} variant='outlined'>
               Download Template
             </Button>
           </div>

@@ -45,6 +45,28 @@ function RFID() {
   const handleAddCorsOrigin = () => {
     // Handle CORS origin logic
   };
+  function handleDownloadTemplate() {
+    fetch('/card/download-template') // Replace with your backend URL
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to download template');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'Card_Template.csv'; // Set the file name for download
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error('Error downloading the template:', error);
+      });
+  }
 
   const handleRegisterRFID = async () => {
     if (newRFID !== "") {
@@ -258,7 +280,7 @@ function RFID() {
                   <Button color="light-blue" onClick={() => handleFileUpload("rfid/upload", currentUser.id, file)} disabled={!file}>
                     Upload
                   </Button>
-                  <Button color="blue-gray" onClick={() => { console.log("Template") }} variant='outlined'>
+                  <Button color="blue-gray" onClick={handleDownloadTemplate()} variant='outlined'>
                     Download Template
                   </Button>
                 </div>

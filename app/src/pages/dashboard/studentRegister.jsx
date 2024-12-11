@@ -76,7 +76,7 @@ export function StudentRegister() {
     }
   };
   function handleDownloadTemplate() {
-    fetch('/student/download-template') // Replace with your backend URL
+    fetch('https://ats-phyn.onrender.com/student/download-template') // Replace with your backend URL
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to download template');

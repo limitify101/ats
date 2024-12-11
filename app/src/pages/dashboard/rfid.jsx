@@ -46,7 +46,7 @@ function RFID() {
     // Handle CORS origin logic
   };
   function handleDownloadTemplate() {
-    fetch('/card/download-template') // Replace with your backend URL
+    fetch('https://ats-phyn.onrender.com/card/download-template') // Replace with your backend URL
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to download template');

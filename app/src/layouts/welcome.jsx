@@ -28,7 +28,6 @@ export function Welcome() {
       });
       console.log(response);
       if (response.ok) {
-
         window.alert("Subscription sent successfully!");
         setEmail(""); // Clear the input
         return;

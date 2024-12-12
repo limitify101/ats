@@ -38,7 +38,7 @@ async function initializeCronJobs(
     }
 
     // Schedule initializeDailyAttendance at 6 AM, Monday to Friday in Kigali
-    const initializeAttendanceSchedule = "26 10 * * 1-5";
+    const initializeAttendanceSchedule = "35 10 * * 1-5";
 
     cron.schedule(
       initializeAttendanceSchedule,

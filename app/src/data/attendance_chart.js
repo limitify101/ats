@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 export const useChartsData = (month) => {
+  
   const {currentUser,loading} = useAuth();
   const tenantId = currentUser?.id;
   const year = dayjs(new Date()).year();
@@ -35,7 +36,7 @@ export const useChartsData = (month) => {
     if (a.class > b.class) return 1;
     return 0;
   }).map((classItem)=>classItem.attendances) || [];
-  
+
   return {
     classNames,
     attendances,

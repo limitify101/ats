@@ -331,18 +331,14 @@ class AttendanceService {
     try {
       const today = new Date();
       const startOfWeek = new Date(
-        today.setDate(today.getDate() - today.getDate() + 1)
+        today.setDate(today.getDate() - (today.getDay() + 6))
       ); //Monday
-      const endOfWeek = new Date(
-        today.setDate(today.getDate() - today.getDate() + 5)
-      ); //Friday
+      const endOfWeek = new Date(today.setDate(startOfWeek.getDate() + 4));
+
       const attendanceData = await this.model.findAll({
         where: {
           date: {
-            [Op.between]: [
-              startOfWeek,
-              endOfWeek,
-            ],
+            [Op.between]: [startOfWeek, endOfWeek],
           },
           tenantID: tenantID,
         },

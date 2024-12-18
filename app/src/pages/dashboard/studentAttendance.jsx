@@ -21,6 +21,8 @@ import dayjs from "dayjs";
 import { updateAttendance } from "@/utils/ApiUtils";
 import { useAuth } from "@/context/AuthContext";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import Processing from "@/components/Processing";
+
 export function StudentAttendance() {
   const { currentUser } = useAuth();
   const { classes } = useClassData();
@@ -33,6 +35,7 @@ export function StudentAttendance() {
   const [studentEdits, setStudentEdits] = useState({});
   const [editedRows, setEditedRows] = useState(new Set());
   const [classData, setClassData] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   const selectedClass = classes.filter((c) => c.grade === value)[0] || null;
   const memoizedClassAttendance = useMemo(() => classAttendance, [classAttendance]);
@@ -140,7 +143,9 @@ export function StudentAttendance() {
       date: dayjs(selectedDate).format("YYYY-MM-DD"),
     };
     try {
+      setLoading(true);
       await updateAttendance(data, currentUser?.id);
+      setLoading(false);
     } catch (error) {
       throw error;
     }
@@ -172,7 +177,9 @@ export function StudentAttendance() {
       return selected.format("MMM D, YYYY");
     }
   };
-
+  if (loading) {
+    return <Processing />
+  }
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">

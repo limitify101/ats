@@ -37,10 +37,11 @@ export function Home() {
 
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
-  const previousMonth = new Date(currentDate.setMonth(currentMonth - 1));
-  const previousMonthName = previousMonth.toLocaleString("en-US", { month: "long" });
+  // const previousMonth = new Date(currentDate.setMonth(currentMonth - 1));
+  // const previousMonthName = previousMonth.toLocaleString("en-US", { month: "long" });
+  const currentMonthName = currentDate.toLocaleString("en-US", { month: "long" });
 
-  const { classNames, attendances, week } = useChartsData(previousMonthName);
+  const { classNames, attendances, week } = useChartsData(currentMonthName);
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -120,7 +121,7 @@ export function Home() {
   const attendance = {
     color: "white",
     title: "Attendance By Grade",
-    description: "Last Month Perfomance",
+    description: "Overall Monthly Perfomance",
     footer: "just updated",
     chart: classAttendance,
   }
@@ -131,7 +132,7 @@ export function Home() {
         <StatisticsCard
           key={1}
           color='green'
-          title="Present Students"
+          title="Present"
           value={presence ? presence : 0}
           icon={<UserGroupIcon className="w-6 h-6 text-white" />}
           footer={
@@ -143,7 +144,7 @@ export function Home() {
         <StatisticsCard
           key={2}
           color='red'
-          title="Absent Students"
+          title="Absent"
           value={absent ? absent : 0}
           icon={<ExclamationCircleIcon className="w-6 h-6 text-white" />}
           footer={

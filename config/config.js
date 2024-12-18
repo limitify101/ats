@@ -32,6 +32,7 @@ export default {
       acquire: 30000, // Wait longer to acquire a connection
       idle: 10000, // Release idle connections after 10 seconds
     },
+    logging: false,
     dialectOptions: {
       ssl: {
         require: true,

@@ -29,6 +29,7 @@ import { UserCircleIcon, UserMinusIcon } from '@heroicons/react/24/outline';
 import { useStudentsData } from '@/data';
 import { handleAssignCards, handleFileUpload } from '@/utils/ApiUtils';
 import { useAuth } from '@/context/AuthContext';
+import Processing from '@/components/Processing';
 
 export function StudentRegister() {
   const {
@@ -37,7 +38,7 @@ export function StudentRegister() {
     unassignedStudents,
   } = useStudentsData();
   const { currentUser } = useAuth();
-
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     studentID: 'STD-',
     studentName: '',
@@ -62,11 +63,13 @@ export function StudentRegister() {
     e.preventDefault();
     if (form.gender)
       try {
+        setLoading(true);
         const response = await axios.post("/api/v1/student/create", form, {
           headers: {
             'x-tenant-id': `${currentUser.id}`
           }
         });
+        setLoading(false);
         toast(response.data.msg, { type: "success" });
       } catch (error) {
         toast(error.response.data.error, { type: "error" });
@@ -76,7 +79,7 @@ export function StudentRegister() {
     }
   };
   function handleDownloadTemplate() {
-    fetch('https://ats-phyn.onrender.com/student/download-template') // Replace with your backend URL
+    fetch(`${import.meta.env.APP_URL}/student/download-template`) // Replace with your backend URL
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to download template');
@@ -100,11 +103,13 @@ export function StudentRegister() {
   const studentOperations = async (status, card, studentID) => {
     if (card && status === "active") {
       try {
+
         const response = await axios.delete(`/api/v1/student/delete/${studentID}`, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
           }
         });
+
         if (response.status === 201) {
           toast("Student terminated successfully", { type: "success" });
         } else {
@@ -115,11 +120,13 @@ export function StudentRegister() {
       }
     } else if (!card && status === "active") {
       try {
+
         const response = await axios.post(`/api/v1/rfid/assign-single/${studentID}`, {}, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
           }
         });
+
         if (response.status === 201) {
           toast("Student assigned successfully", { type: "success" });
         } else {
@@ -131,11 +138,13 @@ export function StudentRegister() {
     }
     else {
       try {
+
         const response = await axios.delete(`/api/v1/student/delete/${studentID}`, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
           }
         });
+
         if (response.status === 201) {
           toast("Student terminated successfully", { type: "success" });
         } else {
@@ -145,6 +154,9 @@ export function StudentRegister() {
         toast(error.response?.data?.message || "Error occurred while assigning student", { type: "error" });
       }
     }
+  }
+  if (loading) {
+    return <Processing />
   }
   return (
     <div className='mt-12 mb-8 flex flex-col gap-12'>
@@ -170,7 +182,7 @@ export function StudentRegister() {
           footer={
             <div className='w-full flex justify-between items-center'>
               <Typography className="font-normal text-blue-gray-600">
-                updated 2hrs ago
+                recent update
               </Typography>
               <Menu placement="left-start">
                 <MenuHandler>
@@ -183,7 +195,16 @@ export function StudentRegister() {
                   </IconButton>
                 </MenuHandler>
                 <MenuList>
-                  <MenuItem onClick={() => handleAssignCards(currentUser.id)}>Assign All</MenuItem>
+                  <MenuItem onClick={async () => {
+                    try {
+                      setLoading(true);
+                      await handleAssignCards(currentUser.id)
+                      setLoading(false);
+                    } catch (error) {
+                      throw error;
+                    }
+                  }
+                  }>Assign All</MenuItem>
                 </MenuList>
               </Menu>
             </div>

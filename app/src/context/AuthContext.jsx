@@ -102,7 +102,7 @@ export function AuthProvider({ children }) {
       // Create client
       try {
         const response = await axios.post(
-          "https://ats-phyn.onrender.com/api/v1/client/create",
+          `http://localhost:3000/api/v1/client/create`,
           {},
           {
             headers: {
@@ -168,7 +168,7 @@ export function AuthProvider({ children }) {
   // Update Info function
   async function updateInfo(newName, newEmail, newProfile) {
     try {
-      let publicUrl = null;
+      let publicUrl = currentUser.user_metadata.profile;
 
       // Check if a new profile image is provided
       if (newProfile) {
@@ -204,7 +204,7 @@ export function AuthProvider({ children }) {
         email: newEmail,
         data: {
           displayName: newName,
-          profile: publicUrl || null, // Update profile URL if available
+          profile: publicUrl, // Update profile URL if available
         },
       });
 

@@ -119,7 +119,6 @@ export function Profile() {
               <motion.div className="w-full flex-shrink-0">
                 <ProfileInfoCard
                   title="Profile Information"
-                  description="School based in Kigali, Rwanda"
                   details={{
                     "School mobile": `+${user.phone}`,
                     "School email": `${currentUser.email}`,

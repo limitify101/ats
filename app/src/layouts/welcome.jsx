@@ -21,7 +21,7 @@ export function Welcome() {
     }
 
     try {
-      const response = await fetch("https://ats-phyn.onrender.com/api/v1/client/send-email", {
+      const response = await fetch(`http://localhost:3000/api/v1/client/send-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

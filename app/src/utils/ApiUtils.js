@@ -1,7 +1,8 @@
+import LoadingScreen from "@/components/LoadingScreen";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
-const BASE_URL = "https://ats-phyn.onrender.com/api/v1";
+const BASE_URL = `http://localhost:3000/api/v1`;
 
 
 export const fetchData = async (endpoint, tenantId) => {

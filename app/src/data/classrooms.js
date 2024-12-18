@@ -11,12 +11,12 @@ export const useClassData = () => {
     const {data:classes,error:classesError} = useQuery({
         queryKey:["classes"],
         queryFn:()=>fetchData("student/list-classes", tenantId),
-        staleTime: 30000,
+        staleTime: 5000,
     })
     const {data:attendanceLog,error:attendanceLogError} = useQuery({
         queryKey:["attendanceLog"],
         queryFn:()=>fetchData("attendance/class-present",tenantId),
-        staleTime:30000,
+        staleTime:5000,
     })
 
     return {

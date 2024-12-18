@@ -18,17 +18,17 @@ export const useClassAttendanceData = (date) => {
     const {data:presence,error:presenceError} = useQuery({
         queryKey:["presence"],
         queryFn:()=>fetchData("attendance/count-present",tenantId),
-        staleTime: 30000,
+        staleTime: 5000,
     })
     const {data:late,error:lateError} = useQuery({
         queryKey:["late"],
         queryFn:()=>fetchData("attendance/count-late",tenantId),
-        staleTime: 30000,
+        staleTime: 5000,
     })
     const {data:absent,error:absentError} = useQuery({
         queryKey:["absent"],
         queryFn:()=>fetchData("attendance/count-absent",tenantId),
-        staleTime: 30000,
+        staleTime: 5000,
     })
     //Error handling
 

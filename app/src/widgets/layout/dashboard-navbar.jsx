@@ -28,7 +28,7 @@ export function DashboardNavbar({ user }) {
 
   const handleSearchData = (e) => {
     e.preventDefault();
-    setSearchData(searchRef.current.value);
+    setSearchData(searchRef.current.value.toUpperCase());
   }
 
   const handleSubmit = () => {

@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from "@/context/AuthContext";
 import { useRfidData } from '@/data';
 import { handleAssignCards, handleFileUpload } from '@/utils/ApiUtils';
+import Processing from '@/components/Processing';
 
 function RFID() {
   const {
@@ -33,7 +34,7 @@ function RFID() {
   const { currentUser } = useAuth();
   const [corsOrigin, setCorsOrigin] = useState("");
   const [newRFID, setNewRFID] = useState("");
-
+  const [loading, setLoading] = useState(false)
   const [file, setFile] = useState(null);
 
 
@@ -46,7 +47,7 @@ function RFID() {
     // Handle CORS origin logic
   };
   function handleDownloadTemplate() {
-    fetch('https://ats-phyn.onrender.com/card/download-template') // Replace with your backend URL
+    fetch(`${import.meta.env.APP_URL}/card/download-template`) // Replace with your backend URL
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to download template');
@@ -71,11 +72,13 @@ function RFID() {
   const handleRegisterRFID = async () => {
     if (newRFID !== "") {
       try {
+
         const response = await axios.post("/api/v1/rfid/set", { rfid_ID: newRFID }, {
           headers: {
             'x-tenant-id': `${currentUser.id}`
           }
         });
+
         setNewRFID("");
         toast(response.data.msg, { type: "success" });
       } catch (error) {
@@ -87,6 +90,7 @@ function RFID() {
   const handleRFID = async (id, active, student) => {
     if (id && active) {
       try {
+
         const response = await axios.post(`/api/v1/rfid/deactivate/${id}`, {}, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
@@ -105,11 +109,13 @@ function RFID() {
     }
     else if (!active && student) {
       try {
+
         const response = await axios.post(`/api/v1/rfid/activate/${id}`, {}, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
           }
         });
+
         if (response.status === 201) {
           toast("Card activated successfully", { type: "success" });
         } else {
@@ -121,11 +127,13 @@ function RFID() {
     }
     else if (!student) {
       try {
+
         const response = await axios.delete(`/api/v1/rfid/delete/${id}`, {
           headers: {
             "x-tenant-id": `${currentUser.id}`
           }
         });
+
         if (response.status === 201) {
           toast("Card deleted successfully", { type: "success" });
         } else {
@@ -136,7 +144,9 @@ function RFID() {
       }
     }
   };
-
+  if (loading) {
+    return <Processing />
+  }
   return (
     <div className="mt-12">
       <div className="mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -174,7 +184,15 @@ function RFID() {
                   </IconButton>
                 </MenuHandler>
                 <MenuList>
-                  <MenuItem onClick={() => handleAssignCards(currentUser.id)}>Assign All</MenuItem>
+                  <MenuItem onClick={async () => {
+                    try {
+                      setLoading(true)
+                      await handleAssignCards(currentUser.id)
+                      setLoading(false)
+                    } catch (error) {
+                      throw error
+                    }
+                  }}>Assign All</MenuItem>
                 </MenuList>
               </Menu>
             </div>

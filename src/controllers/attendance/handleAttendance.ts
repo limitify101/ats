@@ -3,7 +3,6 @@ import AttendanceService from "../../services/AttendanceService";
 import { Attendance, ScanData } from "../../types/attendance.types";
 import moment from "moment";
 import { getStudentWithRFID } from "../../helpers/rfidHelper";
-import { Op } from "sequelize";
 
 const handleAttendance = (
   sequelize: any,
@@ -30,6 +29,7 @@ const handleAttendance = (
       });
 
       if (!settings) {
+        console.log("Invalid data");
         return res.status(400).json({
           success: false,
           msg: "Attendance settings not configured for this tenant",

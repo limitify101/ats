@@ -347,7 +347,7 @@ function RFID() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {['RFID ID', 'Assigned To', 'Class', 'Status', 'Actions'].map((el) => (
+                {['Card ID', 'Assigned To', 'Class', 'Status', 'Actions'].map((el) => (
                   <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}

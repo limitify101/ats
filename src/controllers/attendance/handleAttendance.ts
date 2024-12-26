@@ -42,7 +42,7 @@ const handleAttendance = (
       // Check if the student exists with the provided RFID
       const student = await getStudentWithRFID(Log.rfid_ID, models, tenantID);
       if (!student) {
-        return res.status(404).send("Unauthorized card");
+        return res.status(404).send("Unauthorized");
       }
 
       // Define attendance status based on arrival time
@@ -79,10 +79,7 @@ const handleAttendance = (
           );
         } else {
           // Disallow update if attendance is already marked as present or late
-          return res.status(400).json({
-            success: false,
-            msg: "Attendance already marked. Updates are not allowed.",
-          });
+          return res.status(400).send("Already scanned");
         }
       } else {
         // Log attendance if no record exists for today
@@ -98,9 +95,7 @@ const handleAttendance = (
       }
 
       await transaction.commit();
-      return res
-        .status(200)
-        .json({ success: true, msg: "Attendance logged successfully" });
+      return res.status(200).send("Verified");
     } catch (err: any) {
       await transaction.rollback();
       return res.status(500).json({

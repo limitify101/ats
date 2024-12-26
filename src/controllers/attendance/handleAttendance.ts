@@ -42,11 +42,7 @@ const handleAttendance = (
       // Check if the student exists with the provided RFID
       const student = await getStudentWithRFID(Log.rfid_ID, models, tenantID);
       if (!student) {
-        return res.status(404).json({
-          success: false,
-          msg: "No student found with the specified RFID ID",
-          error: "Unauthorized",
-        });
+        return res.status(404).send("Unauthorized card");
       }
 
       // Define attendance status based on arrival time

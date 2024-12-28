@@ -129,7 +129,7 @@ app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
     });
   }
 });
-app.get("api/v1/student/download-template", (req: any, res: any) => {
+app.get("/api/v1/student/download-template", (req: any, res: any) => {
   const filePath = path.join(
     __dirname,
     "../templates",
@@ -150,7 +150,7 @@ app.get("api/v1/student/download-template", (req: any, res: any) => {
     });
   });
 });
-app.get("api/v1/card/download-template", (req: any, res: any) => {
+app.get("/api/v1/card/download-template", (req: any, res: any) => {
   const filePath = path.join(__dirname, "../templates", "Card_Template.csv");
   res.download(filePath, "Card_Template.csv", (err: any) => {
     if (err) {

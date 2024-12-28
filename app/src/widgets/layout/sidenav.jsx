@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { XMarkIcon, ChevronUpIcon ,ArrowRightStartOnRectangleIcon} from "@heroicons/react/24/outline";
+import { XMarkIcon, ChevronUpIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import {
   Avatar,
   Button,
@@ -14,7 +14,7 @@ import {
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 
-export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLogOutClick}) {
+export function Sidenav({ brandImg = "/img/ATS.png", brandName = "ATS", routes, onLogOutClick }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
 
@@ -36,9 +36,8 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
   };
   return (
     <aside
-      className={`${sidenavTypes[sidenavType]} ${
-    openSidenav ? "translate-x-0" : "-translate-x-80"
-  } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 
+      className={`${sidenavTypes[sidenavType]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
+        } fixed inset-0 z-50 flex flex-col my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 
     sm:w-56 md:w-64 xl:w-72`}
     >
       <div className="relative">
@@ -63,7 +62,7 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
           <XMarkIcon strokeWidth={2.5} className={sidenavType === "dark" ? "h-5 w-5 text-white" : "h-5 w-5 text-black"} />
         </IconButton>
       </div>
-      <div className="m-4">
+      <div className="m-4 overflow-y-auto grow">
         {routes.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
@@ -86,11 +85,11 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
                   handler={() => toggleMenu(name)}
                   offset={15}
                 >
-                  <MenuHandler className={`flex items-center justify-between p-3 ${sidenavType==="dark"?"hover:bg-opacity-20":""} `}>
+                  <MenuHandler className={`flex items-center justify-between p-3 ${sidenavType === "dark" ? "hover:bg-opacity-20" : ""} `}>
                     <MenuItem>
                       <li className={`flex gap-4 ${sidenavType === "dark"
-                                ? "text-white"
-                                : "text-blue-gray-500"} font-normal font-['Nunito'] items-center`}>
+                        ? "text-white"
+                        : "text-blue-gray-500"} font-normal font-['Nunito'] items-center`}>
                         {icon}
                         <Typography color="inherit" className="font-normal font-['Nunito'] capitalize">
                           {name}
@@ -98,9 +97,8 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
                       </li>
                       <ChevronUpIcon
                         strokeWidth={2.5}
-                        className={`h-3.5 w-3.5 transition-transform ${
-                          openMenu[name] ? "rotate-90" : ""
-                        } ${sidenavType === "dark" ? "text-white" : "text-blue-gray-500"}`}
+                        className={`h-3.5 w-3.5 transition-transform ${openMenu[name] ? "rotate-90" : ""
+                          } ${sidenavType === "dark" ? "text-white" : "text-blue-gray-500"}`}
                       />
                     </MenuItem>
                   </MenuHandler>
@@ -109,20 +107,19 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
                       <NavLink to={`/${layout}${subPath}`} key={subName} className={"border-none"}>
                         {({ isActive }) => (
                           <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color={
-                            isActive
-                              ? sidenavColor
-                              : (sidenavType === "dark"
-                              ? ("blue-gray")
-                              : ("white"))
-                          }
-                          className={`flex items-center gap-4 px-4 capitalize ${
-                            isActive
+                            variant={isActive ? "gradient" : "text"}
+                            color={
+                              isActive
+                                ? sidenavColor
+                                : (sidenavType === "dark"
+                                  ? ("blue-gray")
+                                  : ("white"))
+                            }
+                            className={`flex items-center gap-4 px-4 capitalize ${isActive
                               ? sidenavColor
                               : "text-blue-gray-500"
-                          }`}
-                          fullWidth
+                              }`}
+                            fullWidth
                           >
                             <Typography color="inherit" className={`font-normal capitalize font-['Nunito']`}>
                               {subName}
@@ -143,8 +140,8 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
                           isActive
                             ? sidenavColor
                             : (sidenavType === "dark"
-                            ? ("white")
-                            : ("blue-gray"))
+                              ? ("white")
+                              : ("blue-gray"))
                         }
                         className="flex items-center gap-4 px-4 capitalize"
                         fullWidth
@@ -168,7 +165,7 @@ export function Sidenav({ brandImg="/img/ATS.png", brandName="ATS", routes ,onLo
           className="flex items-center gap-4 px-4 capitalize"
           fullWidth
         >
-          <ArrowRightStartOnRectangleIcon className="w-5 h-5 text-inherit"/>
+          <ArrowRightStartOnRectangleIcon className="w-5 h-5 text-inherit" />
           <Typography color="inherit" className="font-normal capitalize font-['Nunito']">
             Log Out
           </Typography>

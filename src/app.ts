@@ -8,8 +8,9 @@ import db from "../models";
 import fs from "fs";
 import clientRoutes from "./routes/client.routes";
 import ClientService from "./services/ClientService";
-import initializeCronJobs, {
-  getNextCronSchedule,
+import {
+  calculateNextRun,
+  initializeAttendanceJobs,
 } from "./utils/cronJobs/resetAttendance";
 import { DateTime } from "luxon";
 import extractTenantId from "./middleware/extractTenantID";
@@ -38,7 +39,7 @@ async function INIT_ATTENDANCE() {
     // Concurrently initialize cron jobs for all tenants
     await Promise.all(
       tenants.map((tenant: any) =>
-        initializeCronJobs(clientService, tenant.tenantID, db)
+        initializeAttendanceJobs(clientService, tenant.tenantID, db)
       )
     );
 
@@ -87,7 +88,7 @@ app.post(
         startTime,
         endTime,
       });
-      await initializeCronJobs(clientService, tenantID, db);
+      await initializeAttendanceJobs(clientService, tenantID, db);
       res.status(200).json({ message: "Schedule initialized successfully!" });
     } catch (error) {
       console.error("Error initializing schedule:", error);
@@ -99,36 +100,59 @@ app.post(
 
 // const TIMEZONE = "Africa/Kigali";
 
-app.get("/api/v1/cron-schedule", extractTenantId, (req: any, res: any) => {
-  try {
-    const tenantId = req.tenantId;
+app.get(
+  "/api/v1/cron-schedule",
+  extractTenantId,
+  async (req: any, res: any) => {
+    try {
+      const tenantId = req.tenantId;
+      const clientService = new ClientService(db.AttendanceSettings);
+      // Fetch tenant's attendance settings
+      const attendanceSettings = await clientService.getClientSettings(
+        tenantId
+      );
+      if (!attendanceSettings) {
+        return res.status(404).json({
+          message: `Attendance settings not found for tenantID: ${tenantId}`,
+        });
+      }
 
-    // Fetch the next cron schedules
-    const initializeAttendanceTime = getNextCronSchedule(
-      tenantId,
-      "initializeAttendance"
-    );
-    const setAbsentTime = getNextCronSchedule(tenantId, "setAbsent");
+      const { startTime, endTime } = attendanceSettings;
+      if (!startTime || !endTime) {
+        return res.status(400).json({
+          message: `Missing startTime or endTime for tenantID: ${tenantId}`,
+        });
+      }
 
-    // Convert to Africa/Kigali timezone
-    const response = {
-      initializeAttendance: initializeAttendanceTime
-        ? DateTime.fromJSDate(initializeAttendanceTime).toFormat(
-            "yyyy-MM-dd HH:mm:ss"
-          )
-        : null,
-      setAbsent: setAbsentTime
-        ? DateTime.fromJSDate(setAbsentTime).toFormat("yyyy-MM-dd HH:mm:ss")
-        : null,
-    };
+      // Calculate the next scheduled times
+      const initializeAttendanceTime = calculateNextRun(
+        startTime,
+        [1, 2, 3, 4, 5]
+      );
+      const setAbsentTime = calculateNextRun(endTime, [1, 2, 3, 4, 5]);
 
-    res.json(response);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch cron schedules. Please try again later.",
-    });
+      // Convert to Africa/Kigali timezone
+      const response = {
+        initializeAttendance: initializeAttendanceTime
+          ? DateTime.fromJSDate(initializeAttendanceTime).toFormat(
+              "yyyy-MM-dd HH:mm:ss"
+            )
+          : null,
+        setAbsent: setAbsentTime
+          ? DateTime.fromJSDate(setAbsentTime).toFormat("yyyy-MM-dd HH:mm:ss")
+          : null,
+      };
+
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching schedule times:", error);
+      res.status(500).json({
+        message: "Failed to fetch schedule times. Please try again later.",
+      });
+    }
   }
-});
+);
+
 app.get("/api/v1/student/download-template", (req: any, res: any) => {
   const filePath = path.join(
     __dirname,

@@ -1,28 +1,21 @@
-import cron from "node-cron";
 import { DateTime } from "luxon";
-import parser from "cron-parser";
 import {
   initializeDailyAttendance,
   setAbsentForPendingStudents,
 } from "../../helpers/attendanceHelper";
 
-const tenantCronSchedules: Record<string, Record<string, Date>> = {};
-// const SYSTEM_TIMEZONE = "Africa/Kigali";
+const tenantSchedules: Record<
+  string,
+  Record<string, NodeJS.Timeout | null>
+> = {};
 
-export function getNextCronSchedule(
-  tenantID: string,
-  jobName: string
-): Date | null {
-  return tenantCronSchedules[tenantID]?.[jobName] || null;
-}
-
-async function initializeCronJobs(
+export async function initializeAttendanceJobs(
   clientService: any,
   tenantID: string,
   models: any
 ) {
-  if (!tenantCronSchedules[tenantID]) {
-    tenantCronSchedules[tenantID] = {};
+  if (!tenantSchedules[tenantID]) {
+    tenantSchedules[tenantID] = { initializeAttendance: null, setAbsent: null };
   }
 
   try {
@@ -37,73 +30,74 @@ async function initializeCronJobs(
       throw new Error(`Missing startTime or endTime for tenantID: ${tenantID}`);
     }
 
-    // Schedule initializeDailyAttendance at 6 AM, Monday to Friday in Kigali
-    const initializeAttendanceSchedule = "0 6 * * 1-5";
-
-    cron.schedule(
-      initializeAttendanceSchedule,
-      async () => {
-        console.log(
-          `Running initializeDailyAttendance for tenantID: ${tenantID}`
-        );
-        await initializeDailyAttendance(models, tenantID);
-        tenantCronSchedules[tenantID]["initializeAttendance"] =
-          calculateNextRun(initializeAttendanceSchedule);
-      }
-      // { timezone: SYSTEM_TIMEZONE }
+    // Schedule initializeDailyAttendance at 6 AM, Monday to Friday
+    scheduleJob(
+      tenantID,
+      "initializeAttendance",
+      () => initializeDailyAttendance(models, tenantID),
+      calculateNextRun("06:00", [1, 2, 3, 4, 5])
     );
 
-    tenantCronSchedules[tenantID]["initializeAttendance"] = calculateNextRun(
-      initializeAttendanceSchedule
-      // SYSTEM_TIMEZONE
-    );
-
-    // Schedule setAbsentForPendingStudents at the endTime, Monday to Friday
-    const setAbsentSchedule = `0 ${endTime.split(":")[1]} ${
-      endTime.split(":")[0]
-    } * * 1-5`;
-
-    cron.schedule(
-      setAbsentSchedule,
-      async () => {
-        console.log(
-          `Running setAbsentForPendingStudents for tenant: ${tenantID}`
-        );
-        await setAbsentForPendingStudents(models.Attendance, tenantID);
-        tenantCronSchedules[tenantID]["setAbsent"] = calculateNextRun(
-          setAbsentSchedule
-          // SYSTEM_TIMEZONE
-        );
-      }
-      // { timezone: SYSTEM_TIMEZONE }
-    );
-
-    tenantCronSchedules[tenantID]["setAbsent"] = calculateNextRun(
-      setAbsentSchedule
-      // SYSTEM_TIMEZONE
+    // Schedule setAbsentForPendingStudents at the specified endTime, Monday to Friday
+    scheduleJob(
+      tenantID,
+      "setAbsent",
+      () => setAbsentForPendingStudents(models.Attendance, tenantID),
+      calculateNextRun(endTime, [1, 2, 3, 4, 5])
     );
   } catch (error) {
+    console.error(`Error initializing jobs for tenantID: ${tenantID}`, error);
     throw error;
   }
 }
 
-export default initializeCronJobs;
+function scheduleJob(
+  tenantID: string,
+  jobName: string,
+  jobFunction: () => Promise<void>,
+  nextRunTime: Date
+) {
+  const now = new Date();
+  const delay = nextRunTime.getTime() - now.getTime();
 
-/**
- * Calculate the next execution time for a given cron schedule in the specified timezone.
- */
-function calculateNextRun(schedule: string): Date {
-  try {
-    const interval = parser.parseExpression(schedule); // No timezone handling here
-    const nextRunUtc = interval.next().toDate(); // Returns UTC Date
+  if (delay > 0) {
+    if (tenantSchedules[tenantID][jobName]) {
+      clearTimeout(tenantSchedules[tenantID][jobName]!);
+    }
 
-    // Convert UTC Date to the target timezone
-    const nextRunInTimezone = DateTime.fromJSDate(nextRunUtc, {
-      zone: "utc",
-    }).toJSDate();
-    return nextRunInTimezone;
-  } catch (error) {
-    console.error("Error calculating next run for schedule:", schedule, error);
-    throw new Error("Invalid cron schedule provided");
+    tenantSchedules[tenantID][jobName] = setTimeout(async () => {
+      console.log(`Running ${jobName} for tenantID: ${tenantID}`);
+      await jobFunction();
+      const nextRun = calculateNextRun(
+        jobName === "initializeAttendance" ? "06:00" : "endTime",
+        [1, 2, 3, 4, 5]
+      );
+      scheduleJob(tenantID, jobName, jobFunction, nextRun);
+    }, delay);
+  } else {
+    console.warn(`Next run time for ${jobName} is in the past. Skipping.`);
+  }
+}
+
+export function calculateNextRun(time: string, daysOfWeek: number[]): Date {
+  const [hour, minute] = time.split(":").map(Number);
+  const now = DateTime.now();
+  let nextRun = now.set({ hour, minute, second: 0, millisecond: 0 });
+
+  while (!daysOfWeek.includes(nextRun.weekday) || nextRun <= now) {
+    nextRun = nextRun.plus({ days: 1 });
+  }
+
+  return nextRun.toJSDate();
+}
+
+export function stopAttendanceJobs(tenantID: string) {
+  if (tenantSchedules[tenantID]) {
+    Object.keys(tenantSchedules[tenantID]).forEach((jobName) => {
+      if (tenantSchedules[tenantID][jobName]) {
+        clearTimeout(tenantSchedules[tenantID][jobName]!);
+        tenantSchedules[tenantID][jobName] = null;
+      }
+    });
   }
 }

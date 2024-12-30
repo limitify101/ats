@@ -111,7 +111,7 @@ export function SignIn() {
             </form>
 
           </div>
-          <div className="w-2/5 h-full hidden lg:block">
+          <div className="w-2/5 h-full hidden lg:flex lg:items-center lg:justify-center">
             <img
               src="/img/pattern.png"
               className="h-full w-full object-cover rounded-3xl"

@@ -19,7 +19,6 @@ export const classAttendance = (
 
       // Initialize daily attendance only on weekdays (Monday to Friday)
       if (currentDay >= 1 && currentDay <= 5) {
-        console.log("Initializing daily attendance...");
         await transaction.rollback(); // Rollback if necessary
         await initializeDailyAttendance(models, tenantID); // Initialize attendance
       }

@@ -36,7 +36,6 @@ export const initializeDailyAttendance = async (models: any, tenantID: any) => {
     );
 
     if (studentsToAttend.length === 0) {
-      console.log("All students already have attendance recorded for today.");
       return;
     }
 

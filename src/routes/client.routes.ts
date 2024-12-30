@@ -32,7 +32,7 @@ const clientRoutes = (sequelize: any, model: any) => {
           pass: process.env.APP_PASS, // Replace with your email password or app-specific password
         },
       });
-
+      const year = new Date().getFullYear();
       // Mail options
       const mailOptions = {
         from: process.env.APP, // Sender's email
@@ -144,15 +144,10 @@ const clientRoutes = (sequelize: any, model: any) => {
       <!-- Footer Section -->
       <div class="footer">
         <p>
-          &copy; <span id="current-year"></span> LIMITIFY. All rights reserved.
+          &copy; <span id="current-year">${year}</span> LIMITIFY. All rights reserved.
         </p>
       </div>
     </div>
-    <script>
-      // Dynamically update the current year
-      document.getElementById("current-year").textContent =
-        new Date().getFullYear();
-    </script>
   </body>
 </html>`,
       };

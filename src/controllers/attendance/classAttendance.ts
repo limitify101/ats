@@ -12,25 +12,35 @@ export const classAttendance = (
     const { date } = req.query; // Optional date filter
     const tenantID = req.tenantId;
     const transaction: any = await sequelize.transaction();
-    try {
-      // Fetch attendance data with related student information
 
-      const attendanceData = await attendance.attendancePerClass(
+    try {
+      // Get the current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const currentDay = new Date().getDay();
+      console.log("Current Day:", currentDay);
+
+      // Initialize daily attendance only on weekdays (Monday to Friday)
+      if (currentDay >= 1 && currentDay <= 5) {
+        console.log("Initializing daily attendance...");
+        await transaction.rollback(); // Rollback if necessary
+        await initializeDailyAttendance(models, tenantID); // Initialize attendance
+      }
+
+      // Fetch attendance data with related student information
+      let attendanceData = await attendance.attendancePerClass(
         tenantID,
         date,
         Students
       );
-      // Get the current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-      const currentDay = new Date().getDay();
 
-      // Check if it's Monday to Friday (1 to 5)
-      if (!attendanceData && currentDay >= 1 && currentDay <= 5) {
-        await transaction.rollback(); // Rollback if necessary
-        initializeDailyAttendance(models, tenantID); // Initialize attendance
-        return res
-          .status(200)
-          .json({ success: true, msg: "No attendance logs found", data: null });
+      // If no attendance data is found, return early with a message
+      if (!attendanceData || attendanceData.length === 0) {
+        return res.status(200).json({
+          success: true,
+          msg: "No attendance logs found.",
+          data: null,
+        });
       }
+
       // Transform data into the desired format
       const groupedData = attendanceData.reduce((result: any, record: any) => {
         const className = record["student.grade"]; // Extract class/grade
@@ -57,6 +67,7 @@ export const classAttendance = (
         return result;
       }, []);
 
+      // Return the grouped attendance data
       res.status(200).json({
         success: true,
         msg: "Fetched class attendance",

@@ -155,8 +155,11 @@ class AttendanceService {
         raw: true,
         order: [[Sequelize.col("student.studentName"), "ASC"]], // Flatten the result for easier manipulation
       });
+      console.log("Attendance per class is :" + attendanceData);
       return attendanceData;
-    } catch (err: any) {}
+    } catch (err: any) {
+      throw err;
+    }
   }
 
   async presenceCountPerClass(tenantID: any, Students: any) {

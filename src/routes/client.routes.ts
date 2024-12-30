@@ -115,11 +115,11 @@ const clientRoutes = (sequelize: any, model: any) => {
     <div class="container">
       <!-- Logo Section -->
       <div class="logo">
-        <img src="https://i.postimg.cc/BQZsxqPj/logo.png" alt="Logo" />
+        <img src="https://i.postimg.cc/BQZsxqPj/logo.png" alt="Logo" style="pointer-events: none;"/>
       </div>
       <!-- Banner Section -->
       <div class="banner">
-        <img src="https://i.postimg.cc/DfDfvHwW/ATS-Banner.png" alt="Banner" />
+        <img src="https://i.postimg.cc/DfDfvHwW/ATS-Banner.png" alt="Banner" style="pointer-events: none;"/>
       </div>
       <!-- Main Content -->
       <div class="content">

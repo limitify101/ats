@@ -131,7 +131,7 @@ const clientRoutes = (sequelize: any, model: any) => {
         <div
           style="
             background-image: url('https://i.postimg.cc/DfDfvHwW/ATS-Banner.png');
-            width: 500px;
+            width: 600px;
             height: 300px;
             background-size: contain;
             background-repeat: no-repeat;

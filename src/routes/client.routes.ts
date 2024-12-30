@@ -114,12 +114,29 @@ const clientRoutes = (sequelize: any, model: any) => {
   <body>
     <div class="container">
       <!-- Logo Section -->
-      <div class="logo">
-        <img src="https://i.postimg.cc/BQZsxqPj/logo.png" alt="Logo" style="pointer-events: none;"/>
+      <div class="logo" style="display: flex; justify-content: center">
+        <div
+          style="
+            background-image: url('https://i.postimg.cc/BQZsxqPj/logo.png');
+            width: 150px;
+            height: 150px;
+            background-size: contain;
+            background-repeat: no-repeat;
+          "
+        ></div>
       </div>
+
       <!-- Banner Section -->
-      <div class="banner">
-        <img src="https://i.postimg.cc/DfDfvHwW/ATS-Banner.png" alt="Banner" style="pointer-events: none;"/>
+      <div class="banner" style="display: flex; justify-content: center">
+        <div
+          style="
+            background-image: url('https://i.postimg.cc/DfDfvHwW/ATS-Banner.png');
+            width: 500px;
+            height: 300px;
+            background-size: contain;
+            background-repeat: no-repeat;
+          "
+        ></div>
       </div>
       <!-- Main Content -->
       <div class="content">
@@ -130,7 +147,7 @@ const clientRoutes = (sequelize: any, model: any) => {
           <span
             id="sender-email"
             style="font-style: italic; font-weight: 700; color: #0056b3"
-      >${email}</span
+            >${email}</span
           >
           has been successfully received and our team is currently reviewing it.
           A member of the LIMITIFY team will be in contact with you shortly to
@@ -144,7 +161,8 @@ const clientRoutes = (sequelize: any, model: any) => {
       <!-- Footer Section -->
       <div class="footer">
         <p>
-          &copy; <span id="current-year">${year}</span> LIMITIFY. All rights reserved.
+          &copy; <span id="current-year">${year}</span> LIMITIFY. All rights
+          reserved.
         </p>
       </div>
     </div>

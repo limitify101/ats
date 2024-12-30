@@ -114,7 +114,7 @@ const clientRoutes = (sequelize: any, model: any) => {
   <body>
     <div class="container">
       <!-- Logo Section -->
-      <div class="logo" style="display: flex; justify-content: center">
+      <div class="logo" style="display: flex; justify-content: center; width:100%">
         <div
           style="
             background-image: url('https://i.postimg.cc/BQZsxqPj/logo.png');
@@ -127,7 +127,7 @@ const clientRoutes = (sequelize: any, model: any) => {
       </div>
 
       <!-- Banner Section -->
-      <div class="banner" style="display: flex; justify-content: center">
+      <div class="banner" style="display: flex; justify-content: center; width:100%;">
         <div
           style="
             background-image: url('https://i.postimg.cc/DfDfvHwW/ATS-Banner.png');

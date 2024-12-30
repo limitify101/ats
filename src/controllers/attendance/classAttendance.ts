@@ -16,7 +16,6 @@ export const classAttendance = (
     try {
       // Get the current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
       const currentDay = new Date().getDay();
-      console.log("Current Day:", currentDay);
 
       // Initialize daily attendance only on weekdays (Monday to Friday)
       if (currentDay >= 1 && currentDay <= 5) {

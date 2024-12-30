@@ -12,7 +12,7 @@ export const useClassAttendanceData = (date) => {
     const {data:classAttendance,error:classAttendanceError} = useQuery({
         queryKey:["classAttendance",formattedDate],
         queryFn:()=>fetchData(`attendance/class-details?date=${formattedDate}`,tenantId),
-        staleTime: 1000,
+        staleTime: 30000,
     })
 
     const {data:presence,error:presenceError} = useQuery({

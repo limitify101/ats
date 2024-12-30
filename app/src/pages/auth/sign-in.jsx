@@ -76,11 +76,11 @@ export function SignIn() {
 
               <div className="flex items-center justify-between gap-2 mt-6">
 
-                <Typography variant="small" className="font-medium text-gray-900">
+                {/* <Typography variant="small" className="font-medium text-gray-900">
                   <a href="#">
                     Forgot Password
                   </a>
-                </Typography>
+                </Typography> */}
               </div>
               <div className="space-y-4 mt-8">
                 {/* <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>

@@ -8,10 +8,10 @@ import db from "../models";
 import fs from "fs";
 import clientRoutes from "./routes/client.routes";
 import ClientService from "./services/ClientService";
-import {
-  calculateNextRun,
-  initializeAttendanceJobs,
+import initializeCronJobs, {
+  getNextCronSchedule,
 } from "./utils/cronJobs/resetAttendance";
+
 import { DateTime } from "luxon";
 import extractTenantId from "./middleware/extractTenantID";
 
@@ -39,7 +39,7 @@ async function INIT_ATTENDANCE() {
     // Concurrently initialize cron jobs for all tenants
     await Promise.all(
       tenants.map((tenant: any) =>
-        initializeAttendanceJobs(clientService, tenant.tenantID, db)
+        initializeCronJobs(clientService, tenant.tenantID, db)
       )
     );
 
@@ -88,7 +88,7 @@ app.post(
         startTime,
         endTime,
       });
-      await initializeAttendanceJobs(clientService, tenantID, db);
+      await initializeCronJobs(clientService, tenantID, db);
       res.status(200).json({ message: "Schedule initialized successfully!" });
     } catch (error) {
       console.error("Error initializing schedule:", error);
@@ -106,30 +106,12 @@ app.get(
   async (req: any, res: any) => {
     try {
       const tenantId = req.tenantId;
-      const clientService = new ClientService(db.AttendanceSettings);
-      // Fetch tenant's attendance settings
-      const attendanceSettings = await clientService.getClientSettings(
-        tenantId
+      // Fetch the next cron schedules
+      const initializeAttendanceTime = getNextCronSchedule(
+        tenantId,
+        "initializeAttendance"
       );
-      if (!attendanceSettings) {
-        return res.status(404).json({
-          message: `Attendance settings not found for tenantID: ${tenantId}`,
-        });
-      }
-
-      const { startTime, endTime } = attendanceSettings;
-      if (!startTime || !endTime) {
-        return res.status(400).json({
-          message: `Missing startTime or endTime for tenantID: ${tenantId}`,
-        });
-      }
-
-      // Calculate the next scheduled times
-      const initializeAttendanceTime = calculateNextRun(
-        startTime,
-        [1, 2, 3, 4, 5]
-      );
-      const setAbsentTime = calculateNextRun(endTime, [1, 2, 3, 4, 5]);
+      const setAbsentTime = getNextCronSchedule(tenantId, "setAbsent");
 
       // Convert to Africa/Kigali timezone
       const response = {
@@ -145,9 +127,8 @@ app.get(
 
       res.json(response);
     } catch (error) {
-      console.error("Error fetching schedule times:", error);
       res.status(500).json({
-        message: "Failed to fetch schedule times. Please try again later.",
+        message: "Failed to fetch cron schedules. Please try again later.",
       });
     }
   }

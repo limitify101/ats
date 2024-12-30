@@ -7,7 +7,7 @@ import {
 } from "../../helpers/attendanceHelper";
 
 const tenantCronSchedules: Record<string, Record<string, Date>> = {};
-// const SYSTEM_TIMEZONE = "Africa/Kigali";
+const SYSTEM_TIMEZONE = "Africa/Kigali";
 
 export function getNextCronSchedule(
   tenantID: string,
@@ -49,8 +49,8 @@ async function initializeCronJobs(
         await initializeDailyAttendance(models, tenantID);
         tenantCronSchedules[tenantID]["initializeAttendance"] =
           calculateNextRun(initializeAttendanceSchedule);
-      }
-      // { timezone: SYSTEM_TIMEZONE }
+      },
+      { timezone: SYSTEM_TIMEZONE }
     );
 
     tenantCronSchedules[tenantID]["initializeAttendance"] = calculateNextRun(
@@ -74,8 +74,8 @@ async function initializeCronJobs(
           setAbsentSchedule
           // SYSTEM_TIMEZONE
         );
-      }
-      // { timezone: SYSTEM_TIMEZONE }
+      },
+      { timezone: SYSTEM_TIMEZONE }
     );
 
     tenantCronSchedules[tenantID]["setAbsent"] = calculateNextRun(

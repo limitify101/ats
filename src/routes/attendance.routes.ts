@@ -49,7 +49,7 @@ const attendanceRoutes = (sequelize: any, models: any) => {
   router.get(
     "/class-details",
     extractTenantId,
-    classAttendance(sequelize, attendanceService, models.Students)
+    classAttendance(sequelize, attendanceService, models.Students, models)
   );
   router.get(
     "/class-present",

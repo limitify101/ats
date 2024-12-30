@@ -1,10 +1,12 @@
 import { NextFunction, Response } from "express";
 import AttendanceService from "../../services/AttendanceService";
+import { initializeDailyAttendance } from "../../helpers/attendanceHelper";
 
 export const classAttendance = (
   sequelize: any,
   attendance: AttendanceService,
-  Students: any
+  Students: any,
+  models: any
 ) => {
   return async (req: any, res: Response, next: NextFunction): Promise<any> => {
     const { date } = req.query; // Optional date filter
@@ -18,8 +20,13 @@ export const classAttendance = (
         date,
         Students
       );
-      if (!attendanceData) {
-        await transaction.rollback;
+      // Get the current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const currentDay = new Date().getDay();
+
+      // Check if it's Monday to Friday (1 to 5)
+      if (!attendanceData && currentDay >= 1 && currentDay <= 5) {
+        await transaction.rollback(); // Rollback if necessary
+        initializeDailyAttendance(models, tenantID); // Initialize attendance
         return res
           .status(200)
           .json({ success: true, msg: "No attendance logs found", data: null });

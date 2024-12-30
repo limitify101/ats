@@ -36,7 +36,7 @@ export function SignIn() {
           y: 0,
         }}
         transition={{ duration: 0.5 }}>
-        <section className="m-8 flex gap-4">
+        <section className="m-8 flex gap-4 items-center">
           <div className="w-full lg:w-3/5 mt-24">
             <div className="text-center">
               <Typography variant="h2" className="font-bold mb-4">Log In</Typography>

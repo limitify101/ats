@@ -47,7 +47,7 @@ function RFID() {
     // Handle CORS origin logic
   };
   function handleDownloadTemplate() {
-    fetch(`https://ats-kkcp.onrender.com/card/download-template`) // Replace with your backend URL
+    fetch(`https://ats-kkcp.onrender.com/api/v1/card/download-template`) // Replace with your backend URL
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to download template');

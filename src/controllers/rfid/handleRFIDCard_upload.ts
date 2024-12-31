@@ -66,7 +66,8 @@ const handleRfidUpload = (
       return res.status(409).json({
         success: false,
         msg: "Error uploading data",
-        error: "Verify the file format or specific fields",
+        error:
+          "Verify the file format or specific fields and unique constraints",
       });
     }
   };
